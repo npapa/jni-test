@@ -535,6 +535,44 @@
 %typemap(javain) tiledb_walk_order_t * "$javainput"
 
 
+%typemap(jni) char ** "jobjectArray"
+%typemap(jtype) char ** "String[]"
+%typemap(jstype) char ** "String[]"
+%typemap(javain) char ** "$javainput"
+%typemap(in) char ** (char * ret) %{
+  $1 = &ret;
+//  jstring str = (jstring) jenv->GetObjectArrayElement($input, 0);
+%}
+%typemap(argout) char ** {
+
+  jstring str = jenv->NewStringUTF(*$1); 
+  jenv->SetObjectArrayElement($input,0, str);
+//  jenv->ReleaseObjectArrayElements($input);
+}
+
+
+%typemap(jni) int* "jintArray"
+%typemap(jtype) int* "int[]"
+%typemap(jstype) int* "int[]"
+%typemap(in) int * (jsize len) %{
+  len = jenv->GetArrayLength($input);
+  //copies array from Java to C
+  $1 = jenv->GetIntArrayElements($input, 0);
+%}
+%typemap(argout) int * {
+  jenv->ReleaseIntArrayElements($input, $1, 0);
+}
+%typemap(javain) int * "$javainput"
+
+
+int tiledb_dimension_create(
+    tiledb_ctx_t* ctx,
+    tiledb_dimension_t** dim,
+    const char* name,
+    tiledb_datatype_t type,
+    int* dim_domain,
+    int* tile_extent);
+
 %include "tiledb.h"
 
 

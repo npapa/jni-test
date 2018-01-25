@@ -6,6 +6,8 @@ import io.tiledb.api.tiledbJNI;
 import io.tiledb.api.tiledb_array_type_t;
 import io.tiledb.api.tiledb_config_t;
 import io.tiledb.api.tiledb_ctx_t;
+import io.tiledb.api.tiledb_datatype_t;
+import io.tiledb.api.tiledb_dimension_t;
 import io.tiledb.api.tiledb_object_t;
 import io.tiledb.api.tiledb_query_status_t;
 import io.tiledb.api.tiledb_query_type_t;
@@ -41,8 +43,12 @@ public class Test {
 		tiledb.tiledb_config_set(config, "sm.tile_cache_size", "1");
 		tiledb.tiledb_ctx_create(ctx, config);
 		
-		
-//		tiledb.tiledb_dimension_create(ctx, dim, name, type, dim_domain, tile_extent)
+		int[] x = {1,2,3,4,5,6,7,8,9,10,11};
+		tiledb_dimension_t dim = new tiledb_dimension_t();
+		tiledb.tiledb_dimension_create(ctx, dim, "test11σδγσδγσδ1", tiledb_datatype_t.TILEDB_INT32, x, x);
+		String[] name = new String[1];
+		tiledb.tiledb_dimension_get_name(ctx, dim, name);
+		System.out.println("!!!"+name[0]);
 //		tiledbJNI.tiledb_dimension_create(jarg1, jarg2, jarg3, jarg4, jarg5, jarg6)
 		
 //		//check config

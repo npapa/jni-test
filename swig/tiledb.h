@@ -263,21 +263,14 @@ TILEDB_EXPORT void test(tiledb_array_type_t* test){*test = TILEDB_SPARSE;};
 
 TILEDB_EXPORT void testt(tiledb_array_type_t* test){*test = TILEDB_DENSE;};
 
-/*
-#ifndef TILEDB_STRUCTS
-TILEDB_EXPORT tiledb_config_t* new_tiledb_config_t(){tiledb_config_t* ret; return ret;};
-TILEDB_EXPORT tiledb_ctx_t* new_tiledb_ctx_t(){tiledb_ctx_t* ret; return ret;};
-TILEDB_EXPORT tiledb_error_t* new_tiledb_error_t(){tiledb_error_t* ret; return ret;};
-TILEDB_EXPORT tiledb_attribute_t* new_tiledb_attribute_t(){tiledb_attribute_t* ret; return ret;};
-TILEDB_EXPORT tiledb_array_schema_t* new_tiledb_array_schema_t(){tiledb_array_schema_t* ret; return ret;};
-TILEDB_EXPORT tiledb_dimension_t* new_tiledb_dimension_t(){tiledb_dimension_t* ret; return ret;};
-TILEDB_EXPORT tiledb_domain_t* new_tiledb_domain_t(){tiledb_domain_t* ret; return ret;};
-TILEDB_EXPORT tiledb_query_t* new_tiledb_query_t(){tiledb_query_t* ret; return ret;};
-TILEDB_EXPORT tiledb_kv_t* new_tiledb_kv_t(){tiledb_kv_t* ret; return ret;};
-TILEDB_EXPORT tiledb_vfs_t* new_tiledb_vfs_t(){tiledb_vfs_t* ret; return ret;};
-#define TILEDB_STRUCTS
-#endif
-*/
+TILEDB_EXPORT void printTest(int* x){
+   int i;
+   for (i = 0; i < 10; i++) {
+      printf("[%d] = %d\n", i, x[i]);
+   }
+   x[5]=42;
+}
+
 
 /* ********************************* */
 /*              CONFIG               */
