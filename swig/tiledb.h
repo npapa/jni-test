@@ -272,6 +272,8 @@ TILEDB_EXPORT void printTest(int* x){
 }
 
 
+
+
 /* ********************************* */
 /*              CONFIG               */
 /* ********************************* */
@@ -726,6 +728,13 @@ TILEDB_EXPORT int tiledb_dimension_get_type(
  */
 TILEDB_EXPORT int tiledb_dimension_get_domain(
     tiledb_ctx_t* ctx, const tiledb_dimension_t* dim, void** domain);
+
+
+TILEDB_EXPORT int tiledb_dimension_get_domain_i(
+    tiledb_ctx_t* ctx, const tiledb_dimension_t* dim, int** domain){
+    void ** d = reinterpret_cast <void **> (domain);
+    return tiledb_dimension_get_domain(ctx,dim, d);
+    };
 
 /**
  * Retrieves the tile extent of the dimension.

@@ -996,14 +996,12 @@ SWIGEXPORT jint JNICALL Java_io_tiledb_api_tiledbJNI_tiledb_1error_1message(JNIE
   arg2 = *(tiledb_error_t **)&jarg2; 
   
   arg3 = &ret3;
-  //  jstring str = (jstring) jenv->GetObjectArrayElement(jarg3, 0);
   
   result = (int)tiledb_error_message(arg1,arg2,(char const **)arg3);
   jresult = (jint)result; 
   {
     jstring str = jenv->NewStringUTF(*arg3); 
     jenv->SetObjectArrayElement(jarg3,0, str);
-    //  jenv->ReleaseObjectArrayElements(jarg3);
   }
   return jresult;
 }
@@ -1162,14 +1160,12 @@ SWIGEXPORT jint JNICALL Java_io_tiledb_api_tiledbJNI_tiledb_1attribute_1get_1nam
   arg2 = *(tiledb_attribute_t **)&jarg2; 
   
   arg3 = &ret3;
-  //  jstring str = (jstring) jenv->GetObjectArrayElement(jarg3, 0);
   
   result = (int)tiledb_attribute_get_name(arg1,(tiledb_attribute_t const *)arg2,(char const **)arg3);
   jresult = (jint)result; 
   {
     jstring str = jenv->NewStringUTF(*arg3); 
     jenv->SetObjectArrayElement(jarg3,0, str);
-    //  jenv->ReleaseObjectArrayElements(jarg3);
   }
   return jresult;
 }
@@ -1571,14 +1567,12 @@ SWIGEXPORT jint JNICALL Java_io_tiledb_api_tiledbJNI_tiledb_1dimension_1get_1nam
   arg2 = *(tiledb_dimension_t **)&jarg2; 
   
   arg3 = &ret3;
-  //  jstring str = (jstring) jenv->GetObjectArrayElement(jarg3, 0);
   
   result = (int)tiledb_dimension_get_name(arg1,(tiledb_dimension_t const *)arg2,(char const **)arg3);
   jresult = (jint)result; 
   {
     jstring str = jenv->NewStringUTF(*arg3); 
     jenv->SetObjectArrayElement(jarg3,0, str);
-    //  jenv->ReleaseObjectArrayElements(jarg3);
   }
   return jresult;
 }
@@ -1631,6 +1625,34 @@ SWIGEXPORT jint JNICALL Java_io_tiledb_api_tiledbJNI_tiledb_1dimension_1get_1dom
   arg3 = *(void ***)&jarg3; 
   result = (int)tiledb_dimension_get_domain(arg1,(tiledb_dimension_t const *)arg2,arg3);
   jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_io_tiledb_api_tiledbJNI_tiledb_1dimension_1get_1domain_1i(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jintArray jarg3) {
+  jint jresult = 0 ;
+  tiledb_ctx_t *arg1 = (tiledb_ctx_t *) 0 ;
+  tiledb_dimension_t *arg2 = (tiledb_dimension_t *) 0 ;
+  int **arg3 = (int **) 0 ;
+  int *ret3 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(tiledb_ctx_t **)&jarg1; 
+  arg2 = *(tiledb_dimension_t **)&jarg2; 
+  
+  arg3 = &ret3;
+  
+  result = (int)tiledb_dimension_get_domain_i(arg1,(tiledb_dimension_t const *)arg2,arg3);
+  jresult = (jint)result; 
+  {
+    //jarg3 = jenv->NewIntArray(2);
+    //jenv->SetIntArrayRegion(jarg3, 0 , 2, *arg3);
+    jenv->ReleaseIntArrayElements(jarg3, *arg3, 0);
+  }
   return jresult;
 }
 
@@ -2424,7 +2446,6 @@ SWIGEXPORT jint JNICALL Java_io_tiledb_api_tiledbJNI_tiledb_1query_1set_1buffers
   arg2 = *(tiledb_query_t **)&jarg2; 
   
   arg3 = &ret3;
-  //  jstring str = (jstring) jenv->GetObjectArrayElement(jarg3, 0);
   
   arg4 = (unsigned int)jarg4; 
   arg5 = *(void ***)&jarg5; 
@@ -2434,7 +2455,6 @@ SWIGEXPORT jint JNICALL Java_io_tiledb_api_tiledbJNI_tiledb_1query_1set_1buffers
   {
     jstring str = jenv->NewStringUTF(*arg3); 
     jenv->SetObjectArrayElement(jarg3,0, str);
-    //  jenv->ReleaseObjectArrayElements(jarg3);
   }
   return jresult;
 }
@@ -2891,7 +2911,6 @@ SWIGEXPORT jint JNICALL Java_io_tiledb_api_tiledbJNI_tiledb_1kv_1create(JNIEnv *
   arg3 = (unsigned int)jarg3; 
   
   arg4 = &ret4;
-  //  jstring str = (jstring) jenv->GetObjectArrayElement(jarg4, 0);
   
   
   arg5 = &pp5;
@@ -2910,7 +2929,6 @@ SWIGEXPORT jint JNICALL Java_io_tiledb_api_tiledbJNI_tiledb_1kv_1create(JNIEnv *
   {
     jstring str = jenv->NewStringUTF(*arg4); 
     jenv->SetObjectArrayElement(jarg4,0, str);
-    //  jenv->ReleaseObjectArrayElements(jarg4);
   }
   {
     jclass cls = jenv->FindClass("io/tiledb/api/tiledb_datatype_t");

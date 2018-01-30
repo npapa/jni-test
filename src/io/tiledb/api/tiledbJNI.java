@@ -75,6 +75,7 @@ public class tiledbJNI {
   public final static native int tiledb_dimension_get_name(long jarg1, tiledb_ctx_t jarg1_, long jarg2, tiledb_dimension_t jarg2_, String[] jarg3);
   public final static native int tiledb_dimension_get_type(long jarg1, tiledb_ctx_t jarg1_, long jarg2, tiledb_dimension_t jarg2_, tiledb_datatype_t.pointer jarg3);
   public final static native int tiledb_dimension_get_domain(long jarg1, tiledb_ctx_t jarg1_, long jarg2, tiledb_dimension_t jarg2_, long jarg3);
+  public final static native int tiledb_dimension_get_domain_i(long jarg1, tiledb_ctx_t jarg1_, long jarg2, tiledb_dimension_t jarg2_, int[] jarg3);
   public final static native int tiledb_dimension_get_tile_extent(long jarg1, tiledb_ctx_t jarg1_, long jarg2, tiledb_dimension_t jarg2_, long jarg3);
   public final static native int tiledb_dimension_dump(long jarg1, tiledb_ctx_t jarg1_, long jarg2, tiledb_dimension_t jarg2_, long jarg3);
   public final static native int tiledb_array_schema_create(long jarg1, tiledb_ctx_t jarg1_, tiledb_array_schema_t jarg2);

@@ -97,6 +97,7 @@
   }
 %}
 
+
 // Type typemaps for marshalling **
 %typemap(jni) tiledb_array_schema_t ** "jobject"
 %typemap(jtype) tiledb_array_schema_t ** "tiledb_array_schema_t"
@@ -535,22 +536,7 @@
 %typemap(javain) tiledb_walk_order_t * "$javainput"
 
 
-%typemap(jni) char ** "jobjectArray"
-%typemap(jtype) char ** "String[]"
-%typemap(jstype) char ** "String[]"
-%typemap(javain) char ** "$javainput"
-%typemap(in) char ** (char * ret) %{
-  $1 = &ret;
-//  jstring str = (jstring) jenv->GetObjectArrayElement($input, 0);
-%}
-%typemap(argout) char ** {
-
-  jstring str = jenv->NewStringUTF(*$1); 
-  jenv->SetObjectArrayElement($input,0, str);
-//  jenv->ReleaseObjectArrayElements($input);
-}
-
-
+#%pass single pointers - input values 
 %typemap(jni) int* "jintArray"
 %typemap(jtype) int* "int[]"
 %typemap(jstype) int* "int[]"
@@ -565,6 +551,32 @@
 %typemap(javain) int * "$javainput"
 
 
+#%pass double pointers - output values
+%typemap(jni) char ** "jobjectArray"
+%typemap(jtype) char ** "String[]"
+%typemap(jstype) char ** "String[]"
+%typemap(javain) char ** "$javainput"
+%typemap(in) char ** (char * ret) %{
+  $1 = &ret;
+%}
+%typemap(argout) char ** {
+  jstring str = jenv->NewStringUTF(*$1); 
+  jenv->SetObjectArrayElement($input,0, str);
+}
+
+%typemap(jni) int** "jintArray"
+%typemap(jtype) int** "int[]"
+%typemap(jstype) int** "int[]"
+%typemap(in) int** (int * ret) %{
+  $1 = &ret;
+%}
+%typemap(argout) int** {
+  //$input = jenv->NewIntArray(2);
+  //jenv->SetIntArrayRegion($input, 0 , 2, *$1);
+  jenv->ReleaseIntArrayElements($input, *$1, 0);
+}
+%typemap(javain) int** "$javainput"
+
 int tiledb_dimension_create(
     tiledb_ctx_t* ctx,
     tiledb_dimension_t** dim,
@@ -572,6 +584,7 @@ int tiledb_dimension_create(
     tiledb_datatype_t type,
     int* dim_domain,
     int* tile_extent);
+    
 
 %include "tiledb.h"
 

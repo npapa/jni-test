@@ -169,6 +169,10 @@ public class tiledb implements tiledbConstants {
     return tiledbJNI.tiledb_dimension_get_domain(tiledb_ctx_t.getCPtr(ctx), ctx, tiledb_dimension_t.getCPtr(dim), dim, SWIGTYPE_p_p_void.getCPtr(domain));
   }
 
+  public static int tiledb_dimension_get_domain_i(tiledb_ctx_t ctx, tiledb_dimension_t dim, int[] domain) {
+    return tiledbJNI.tiledb_dimension_get_domain_i(tiledb_ctx_t.getCPtr(ctx), ctx, tiledb_dimension_t.getCPtr(dim), dim, domain);
+  }
+
   public static int tiledb_dimension_get_tile_extent(tiledb_ctx_t ctx, tiledb_dimension_t dim, SWIGTYPE_p_p_void tile_extent) {
     return tiledbJNI.tiledb_dimension_get_tile_extent(tiledb_ctx_t.getCPtr(ctx), ctx, tiledb_dimension_t.getCPtr(dim), dim, SWIGTYPE_p_p_void.getCPtr(tile_extent));
   }
