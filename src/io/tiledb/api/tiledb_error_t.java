@@ -21,37 +21,40 @@ public class tiledb_error_t {
     return (obj == null) ? 0 : obj.swigCPtr;
   }
 
+  protected void finalize() {
+    delete();
+  }
+
   public synchronized void delete() {
     if (swigCPtr != 0) {
       if (swigCMemOwn) {
         swigCMemOwn = false;
-        throw new UnsupportedOperationException("C++ destructor does not have public access");
+        tiledbJNI.delete_tiledb_error_t(swigCPtr);
       }
       swigCPtr = 0;
     }
   }
 
-  /** This constructor creates the proxy which initially does not create nor own any C memory */
-  public tiledb_error_t() {
-    this(0, false);
+  public void setStatus_(SWIGTYPE_p_tiledb__Status value) {
+    tiledbJNI.tiledb_error_t_status__set(swigCPtr, this, SWIGTYPE_p_tiledb__Status.getCPtr(value));
   }
 
-  public void setStatus_(SWIGTYPE_p_void value) {
-    tiledbJNI.tiledb_error_t_status__set(swigCPtr, this, SWIGTYPE_p_void.getCPtr(value));
-  }
-
-  public SWIGTYPE_p_void getStatus_() {
+  public SWIGTYPE_p_tiledb__Status getStatus_() {
     long cPtr = tiledbJNI.tiledb_error_t_status__get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
+    return (cPtr == 0) ? null : new SWIGTYPE_p_tiledb__Status(cPtr, false);
   }
 
-  public void setErrmsg_(SWIGTYPE_p_void value) {
-    tiledbJNI.tiledb_error_t_errmsg__set(swigCPtr, this, SWIGTYPE_p_void.getCPtr(value));
+  public void setErrmsg_(SWIGTYPE_p_std__string value) {
+    tiledbJNI.tiledb_error_t_errmsg__set(swigCPtr, this, SWIGTYPE_p_std__string.getCPtr(value));
   }
 
-  public SWIGTYPE_p_void getErrmsg_() {
+  public SWIGTYPE_p_std__string getErrmsg_() {
     long cPtr = tiledbJNI.tiledb_error_t_errmsg__get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
+    return (cPtr == 0) ? null : new SWIGTYPE_p_std__string(cPtr, false);
+  }
+
+  public tiledb_error_t() {
+    this(tiledbJNI.new_tiledb_error_t(), true);
   }
 
 }

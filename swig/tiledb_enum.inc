@@ -5,7 +5,7 @@
  *
  * The MIT License
  *
- * @copyright Copyright (c) 2017 TileDB, Inc.
+ * @copyright Copyright (c) 2017-2018 TileDB, Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -113,4 +113,11 @@ TILEDB_QUERY_STATUS_ENUM(INCOMPLETE) = 2,
 #ifdef TILEDB_WALK_ORDER_ENUM
 TILEDB_WALK_ORDER_ENUM(PREORDER),
 TILEDB_WALK_ORDER_ENUM(POSTORDER),
+#endif
+
+/** TileDB VFS mode */
+#ifdef TILEDB_VFS_MODE_ENUM
+TILEDB_VFS_MODE_ENUM(VFS_READ),
+TILEDB_VFS_MODE_ENUM(VFS_WRITE),
+TILEDB_VFS_MODE_ENUM(VFS_APPEND),
 #endif

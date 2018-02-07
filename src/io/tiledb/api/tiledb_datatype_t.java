@@ -57,18 +57,5 @@ public enum tiledb_datatype_t {
   private static class SwigNext {
     private static int next = 0;
   }
-
-  public static class pointer{
-	  tiledb_datatype_t tiledb_datatype_t;
-	  public pointer(){
-		  tiledb_datatype_t=null;
-	  }
-	  public tiledb_datatype_t get() {
-		return tiledb_datatype_t;
-	  }
-	  public void set(tiledb_datatype_t tiledb_datatype_t) {
-		this.tiledb_datatype_t = tiledb_datatype_t;
-	  }
-  }
 }
 

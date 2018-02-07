@@ -50,18 +50,5 @@ public enum tiledb_query_status_t {
   private static class SwigNext {
     private static int next = 0;
   }
-
-  public static class pointer{
-	  tiledb_query_status_t tiledb_query_status_t;
-	  public pointer(){
-		  tiledb_query_status_t=null;
-	  }
-	  public tiledb_query_status_t get() {
-		return tiledb_query_status_t;
-	  }
-	  public void set(tiledb_query_status_t tiledb_query_status_t) {
-		this.tiledb_query_status_t = tiledb_query_status_t;
-	  }
-  }
 }
 

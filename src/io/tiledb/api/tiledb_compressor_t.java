@@ -59,18 +59,5 @@ public enum tiledb_compressor_t {
   private static class SwigNext {
     private static int next = 0;
   }
-
-  public static class pointer{
-	  tiledb_compressor_t tiledb_compressor_t;
-	  public pointer(){
-		  tiledb_compressor_t=null;
-	  }
-	  public tiledb_compressor_t get() {
-		return tiledb_compressor_t;
-	  }
-	  public void set(tiledb_compressor_t tiledb_compressor_t) {
-		this.tiledb_compressor_t = tiledb_compressor_t;
-	  }
-  }
 }
 

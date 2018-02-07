@@ -48,18 +48,5 @@ public enum tiledb_walk_order_t {
   private static class SwigNext {
     private static int next = 0;
   }
-
-  public static class pointer{
-	  tiledb_walk_order_t tiledb_walk_order_t;
-	  public pointer(){
-		  tiledb_walk_order_t=null;
-	  }
-	  public tiledb_walk_order_t get() {
-		return tiledb_walk_order_t;
-	  }
-	  public void set(tiledb_walk_order_t tiledb_walk_order_t) {
-		this.tiledb_walk_order_t = tiledb_walk_order_t;
-	  }
-  }
 }
 

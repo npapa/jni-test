@@ -21,28 +21,31 @@ public class tiledb_kv_t {
     return (obj == null) ? 0 : obj.swigCPtr;
   }
 
+  protected void finalize() {
+    delete();
+  }
+
   public synchronized void delete() {
     if (swigCPtr != 0) {
       if (swigCMemOwn) {
         swigCMemOwn = false;
-        throw new UnsupportedOperationException("C++ destructor does not have public access");
+        tiledbJNI.delete_tiledb_kv_t(swigCPtr);
       }
       swigCPtr = 0;
     }
   }
 
-  /** This constructor creates the proxy which initially does not create nor own any C memory */
-  public tiledb_kv_t() {
-    this(0, false);
+  public void setKv_(SWIGTYPE_p_tiledb__KV value) {
+    tiledbJNI.tiledb_kv_t_kv__set(swigCPtr, this, SWIGTYPE_p_tiledb__KV.getCPtr(value));
   }
 
-  public void setKv_(SWIGTYPE_p_void value) {
-    tiledbJNI.tiledb_kv_t_kv__set(swigCPtr, this, SWIGTYPE_p_void.getCPtr(value));
-  }
-
-  public SWIGTYPE_p_void getKv_() {
+  public SWIGTYPE_p_tiledb__KV getKv_() {
     long cPtr = tiledbJNI.tiledb_kv_t_kv__get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
+    return (cPtr == 0) ? null : new SWIGTYPE_p_tiledb__KV(cPtr, false);
+  }
+
+  public tiledb_kv_t() {
+    this(tiledbJNI.new_tiledb_kv_t(), true);
   }
 
 }

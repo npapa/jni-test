@@ -21,28 +21,31 @@ public class tiledb_array_schema_t {
     return (obj == null) ? 0 : obj.swigCPtr;
   }
 
+  protected void finalize() {
+    delete();
+  }
+
   public synchronized void delete() {
     if (swigCPtr != 0) {
       if (swigCMemOwn) {
         swigCMemOwn = false;
-        throw new UnsupportedOperationException("C++ destructor does not have public access");
+        tiledbJNI.delete_tiledb_array_schema_t(swigCPtr);
       }
       swigCPtr = 0;
     }
   }
 
-  /** This constructor creates the proxy which initially does not create nor own any C memory */
-  public tiledb_array_schema_t() {
-    this(0, false);
+  public void setArray_schema_(SWIGTYPE_p_tiledb__ArraySchema value) {
+    tiledbJNI.tiledb_array_schema_t_array_schema__set(swigCPtr, this, SWIGTYPE_p_tiledb__ArraySchema.getCPtr(value));
   }
 
-  public void setArray_schema_(SWIGTYPE_p_void value) {
-    tiledbJNI.tiledb_array_schema_t_array_schema__set(swigCPtr, this, SWIGTYPE_p_void.getCPtr(value));
-  }
-
-  public SWIGTYPE_p_void getArray_schema_() {
+  public SWIGTYPE_p_tiledb__ArraySchema getArray_schema_() {
     long cPtr = tiledbJNI.tiledb_array_schema_t_array_schema__get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
+    return (cPtr == 0) ? null : new SWIGTYPE_p_tiledb__ArraySchema(cPtr, false);
+  }
+
+  public tiledb_array_schema_t() {
+    this(tiledbJNI.new_tiledb_array_schema_t(), true);
   }
 
 }

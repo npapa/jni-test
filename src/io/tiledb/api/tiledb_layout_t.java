@@ -50,18 +50,5 @@ public enum tiledb_layout_t {
   private static class SwigNext {
     private static int next = 0;
   }
-
-  public static class pointer{
-	  tiledb_layout_t tiledb_layout_t;
-	  public pointer(){
-		  tiledb_layout_t=null;
-	  }
-	  public tiledb_layout_t get() {
-		return tiledb_layout_t;
-	  }
-	  public void set(tiledb_layout_t tiledb_layout_t) {
-		this.tiledb_layout_t = tiledb_layout_t;
-	  }
-  }
 }
 

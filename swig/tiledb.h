@@ -5,7 +5,7 @@
  *
  * The MIT License
  *
- * @copyright Copyright (c) 2017 TileDB, Inc.
+ * @copyright Copyright (c) 2017-2018 TileDB, Inc.
  * @copyright Copyright (c) 2016 MIT and Intel Corporation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -37,6 +37,15 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#include "array_schema.h"
+#include "config.h"
+#include "kv.h"
+#include "kv_item.h"
+#include "kv_iter.h"
+#include "logger.h"
+#include "query.h"
+#include "utils.h"
+
 /* ********************************* */
 /*               MACROS              */
 /* ********************************* */
@@ -67,29 +76,6 @@ extern "C" {
 #endif
 
 /* ****************************** */
-/*            CONSTANTS           */
-/* ****************************** */
-
-/**@{*/
-/** Return code. */
-#define TILEDB_OK 0      // Success
-#define TILEDB_ERR (-1)  // General error
-#define TILEDB_OOM (-2)  // Out of memory
-/**@}*/
-
-/** Returns a special name indicating the coordinates attribute. */
-TILEDB_EXPORT const char* tiledb_coords();
-
-/** Returns a special value indicating a variable number of elements. */
-TILEDB_EXPORT unsigned int tiledb_var_num();
-
-/**@{*/
-/** Constants wrapping special functions. */
-#define TILEDB_COORDS tiledb_coords()
-#define TILEDB_VAR_NUM tiledb_var_num()
-/**@}*/
-
-/* ****************************** */
 /*          TILEDB ENUMS          */
 /* ****************************** */
 
@@ -107,7 +93,7 @@ TILEDB_OBJECT_TYPE_ENUM(KEY_VALUE)
 typedef enum {
 #define TILEDB_QUERY_TYPE_ENUM(id) TILEDB_##id
 TILEDB_QUERY_TYPE_ENUM(READ),
-TILEDB_QUERY_TYPE_ENUM(WRITE)
+TILEDB_QUERY_TYPE_ENUM(WRITE),
 #undef TILEDB_QUERY_TYPE_ENUM
 } tiledb_query_type_t;
 
@@ -196,6 +182,52 @@ TILEDB_WALK_ORDER_ENUM(POSTORDER),
 #undef TILEDB_WALK_ORDER_ENUM
 } tiledb_walk_order_t;
 
+/** VFS mode. */
+typedef enum {
+#define TILEDB_VFS_MODE_ENUM(id) TILEDB_##id
+TILEDB_VFS_MODE_ENUM(VFS_READ),
+TILEDB_VFS_MODE_ENUM(VFS_WRITE),
+TILEDB_VFS_MODE_ENUM(VFS_APPEND),
+#undef TILEDB_VFS_MODE_ENUM
+} tiledb_vfs_mode_t;
+
+/* ****************************** */
+/*            CONSTANTS           */
+/* ****************************** */
+
+/**@{*/
+/** Return code. */
+#define TILEDB_OK 0      // Success
+#define TILEDB_ERR (-1)  // General error
+#define TILEDB_OOM (-2)  // Out of memory
+/**@}*/
+
+/** Returns a special name indicating the coordinates attribute. */
+TILEDB_EXPORT const char* tiledb_coords();
+
+/** Returns a special value indicating a variable number of elements. */
+TILEDB_EXPORT unsigned int tiledb_var_num();
+
+/** Returns the maximum path length on the current platform. */
+TILEDB_EXPORT unsigned int tiledb_max_path();
+
+/** Returns the input datatype size. */
+TILEDB_EXPORT uint64_t tiledb_datatype_size(tiledb_datatype_t type);
+
+/**
+ * Returns the size (in bytes) of an offset (used in variable-sized
+ * attributes).
+ */
+TILEDB_EXPORT uint64_t tiledb_offset_size();
+
+/**@{*/
+/** Constants wrapping special functions. */
+#define TILEDB_COORDS tiledb_coords()
+#define TILEDB_VAR_NUM tiledb_var_num()
+#define TILEDB_MAX_PATH tiledb_max_path()
+#define TILEDB_OFFSET_SIZE tiledb_offset_size()
+/**@}*/
+
 /* ****************************** */
 /*            VERSION             */
 /* ****************************** */
@@ -213,66 +245,95 @@ TILEDB_EXPORT void tiledb_version(int* major, int* minor, int* rev);
 /*           TILEDB TYPES            */
 /* ********************************* */
 
-/** A config object. */
-typedef struct tiledb_config_t {
-  void* config_;
-}tiledb_config_t;
+struct tiledb_config_t {
+  tiledb::Config* config_;
+};
 
-typedef struct tiledb_ctx_t {
-  void* storage_manager_;
-  void* last_error_;
-  void* mtx_;
-} tiledb_ctx_t;
+struct tiledb_config_iter_t {
+  std::map<std::string, std::string> param_values_;
+  std::map<std::string, std::string>::iterator it_;
+};
 
-typedef struct tiledb_error_t {
+struct tiledb_ctx_t {
+  tiledb::StorageManager* storage_manager_;
+  tiledb::Status* last_error_;
+  std::mutex* mtx_;
+};
+
+struct tiledb_error_t {
   // Pointer to a copy of the last TileDB error associated with a given ctx
-  const void* status_;
-  void* errmsg_;
-} tiledb_error_t;
+  const tiledb::Status* status_;
+  std::string* errmsg_;
+};
 
-typedef struct tiledb_attribute_t {
-  void* attr_;
-} tiledb_attribute_t;
+struct tiledb_attribute_t {
+  tiledb::Attribute* attr_;
+};
 
-typedef struct tiledb_array_schema_t {
-  void* array_schema_;
-} tiledb_array_schema_t;
+struct tiledb_array_schema_t {
+  tiledb::ArraySchema* array_schema_;
+};
 
-typedef struct tiledb_dimension_t {
-  void* dim_;
-} tiledb_dimension_t ;
+struct tiledb_dimension_t {
+  tiledb::Dimension* dim_;
+};
 
-typedef struct tiledb_domain_t {
-  void* domain_;
-} tiledb_domain_t;
+struct tiledb_domain_t {
+  tiledb::Domain* domain_;
+};
 
-typedef struct tiledb_query_t {
-  void* query_;
-} tiledb_query_t;
+struct tiledb_query_t {
+  tiledb::Query* query_;
+};
 
-typedef struct tiledb_kv_t {
-  void* kv_;
-} tiledb_kv_t;
+struct tiledb_kv_schema_t {
+  tiledb::ArraySchema* array_schema_;
+};
 
-typedef struct tiledb_vfs_t {
-  void* vfs_;
-} tiledb_vfs_t;  
+struct tiledb_kv_t {
+  tiledb::KV* kv_;
+};
 
+struct tiledb_kv_item_t {
+  tiledb::KVItem* kv_item_;
+};
 
-TILEDB_EXPORT void test(tiledb_array_type_t* test){*test = TILEDB_SPARSE;};
+struct tiledb_kv_iter_t {
+  tiledb::KVIter* kv_iter_;
+};
 
-TILEDB_EXPORT void testt(tiledb_array_type_t* test){*test = TILEDB_DENSE;};
+struct tiledb_vfs_t {
+  tiledb::VFS* vfs_;
+};
 
-TILEDB_EXPORT void printTest(int* x){
-   int i;
-   for (i = 0; i < 10; i++) {
-      printf("[%d] = %d\n", i, x[i]);
-   }
-   x[5]=42;
-}
+struct tiledb_vfs_fh_t {
+  tiledb::URI uri_;
+  bool is_closed_;
+  tiledb::VFS* vfs_;
+  tiledb::VFSMode mode_;
+};
 
+/* ********************************* */
+/*              ERROR                */
+/* ********************************* */
 
+/**
+ * Returns the error message associated with a TileDB error object.
+ *
+ * @param err A TileDB error object.
+ * @param errmsg A constant pointer to the error message.
+ * @return TILEDB_OK for success and TILEDB_ERR for error.
+ */
+TILEDB_EXPORT int tiledb_error_message(
+    tiledb_error_t* err, const char** errmsg);
 
+/**
+ * Free's the resources associated with a TileDB error object.
+ *
+ * @param err The TileDB error object.
+ * @return TILEDB_OK for success and TILEDB_ERR for error.
+ */
+TILEDB_EXPORT int tiledb_error_free(tiledb_error_t* err);
 
 /* ********************************* */
 /*              CONFIG               */
@@ -282,9 +343,12 @@ TILEDB_EXPORT void printTest(int* x){
  * Creates a TileDB config.
  *
  * @param config The config to be created.
+ * @param error Error object returned upon error (`nullptr` if there is
+ *     no error).
  * @return TILEDB_OK for success and TILEDB_OOM or TILEDB_ERR for error.
  */
-TILEDB_EXPORT int tiledb_config_create(tiledb_config_t** config);
+TILEDB_EXPORT int tiledb_config_create(
+    tiledb_config_t** config, tiledb_error_t** error);
 
 /**
  * Frees a TileDB config.
@@ -321,51 +385,54 @@ TILEDB_EXPORT int tiledb_config_free(tiledb_config_t* config);
  *    The connection timeout in ms. Any `long` value is acceptable.
  * - `vfs.s3.request_timeout_ms` <br>
  *    The request timeout in ms. Any `long` value is acceptable.
+ * - `vfs.hdfs.name_node"` <br>
+ *    Name node for HDFS.
+ * - `vfs.hdfs.username` <br>
+ *    HDFS username.
+ * - `vfs.hdfs.kerb_ticket_cache_path` <br>
+ *    HDFS kerb ticket cache path.
  *
  * @param config The config object.
  * @param param The parameter to be set.
  * @param value The value of the parameter to be set.
+ * @param error Error object returned upon error (`nullptr` if there is
+ *     no error).
  * @return TILEDB_OK for success and TILEDB_ERR for error.
- *
- * @note There are no correctness checks performed here. This function simply
- *     stores each parameter value in the config object, and the correctness
- *     of all the set parameters in the config object is checked in
- *     `tiledb_ctx_create`.
- *
- * @note If `tiledb_config_set_from_file` was invoked, the config parameters
- *     set with `tiledb_config_set` take precedence over those in the
- *     config file.
  */
 TILEDB_EXPORT int tiledb_config_set(
-    tiledb_config_t* config, const char* param, const char* value);
+    tiledb_config_t* config,
+    const char* param,
+    const char* value,
+    tiledb_error_t** error);
 
 /**
- * Sets config parameters read from a text file.
- * The file must have the following format:
+ * Gets a config parameter.
  *
- * parameter value
- *
- * Anything following a `#` character is considered a comment and, thus, is
- * ignored.
- *
- * See `tiledb_config_set` for the various TileDB config parameters and
- * allowed values.
+ * @param config The config object.
+ * @param param The parameter to be set.
+ * @param value A pointer to the value of the parameter to be retrieved
+ *    (`nullptr` if it does not exist).
+ * @param error Error object returned upon error (`nullptr` if there is
+ *     no error).
+ * @return TILEDB_OK for success and TILEDB_ERR for error.
+ */
+TILEDB_EXPORT int tiledb_config_get(
+    tiledb_config_t* config,
+    const char* param,
+    const char** value,
+    tiledb_error_t** error);
+
+/**
+ * Loads config parameters from a (local) text file.
  *
  * @param config The config object.
  * @param filename The name of the file.
+ * @param error Error object returned upon error (`nullptr` if there is
+ *     no error).
  * @return TILEDB_OK for success and TILEDB_ERR for error.
- *
- * @note There are no correctness checks performed here for the parameters.
- *     This function simply stores each parameter value in the config object,
- *     and the correctness of all the set parameters in the config object is
- *     checked in `tiledb_ctx_create`.
- *
- * @note If `tiledb_config_set_from_file` was invoked, the config parameters
- *     set with `tiledb_config_set` take precedence over those in the
- *     config file.
  */
-TILEDB_EXPORT int tiledb_config_set_from_file(
-    tiledb_config_t* config, const char* filename);
+TILEDB_EXPORT int tiledb_config_load_from_file(
+    tiledb_config_t* config, const char* filename, tiledb_error_t** error);
 
 /**
  * Unsets a config parameter. Potentially useful upon errors, to remove a
@@ -373,10 +440,96 @@ TILEDB_EXPORT int tiledb_config_set_from_file(
  *
  * @param config The config object.
  * @param param The parameter to be unset.
+ * @param error Error object returned upon error (`nullptr` if there is
+ *     no error).
  * @return TILEDB_OK for success and TILEDB_ERR for error.
  */
 TILEDB_EXPORT int tiledb_config_unset(
-    tiledb_config_t* config, const char* param);
+    tiledb_config_t* config, const char* param, tiledb_error_t** error);
+
+/**
+ * Saves the config parameters to a (local) text file.
+ *
+ * @param config The config object.
+ * @param filename The name of the file.
+ * @param error Error object returned upon error (`nullptr` if there is
+ *     no error).
+ * @return TILEDB_OK for success and TILEDB_ERR for error.
+ */
+TILEDB_EXPORT int tiledb_config_save_to_file(
+    tiledb_config_t* config, const char* filename, tiledb_error_t** error);
+
+/* ****************************** */
+/*            CONFIG ITER         */
+/* ****************************** */
+
+/**
+ * Creates an iterator on a config object.
+ *
+ * @param config A config object the iterator will operate on.
+ * @param config_iter The config iterator to be created.
+ * @param prefix If not `nullptr`, only the config parameters starting
+ *     with `prefix.*` will be iterated on. Moreover, the prefix will
+ *     be stripped from the parameters. Otherwise, all parameters will
+ *     be iterated on and their full name will be retrieved.
+ * @param error Error object returned upon error (`nullptr` if there is
+ *     no error).
+ * @return TILEDB_OK for success and TILEDB_OOM or TILEDB_ERR for error.
+ */
+TILEDB_EXPORT int tiledb_config_iter_create(
+    tiledb_config_t* config,
+    tiledb_config_iter_t** config_iter,
+    const char* prefix,
+    tiledb_error_t** error);
+
+/**
+ * Frees a config iterator.
+ *
+ * @param config_iter The config iterator to be freed.
+ * @return TILEDB_OK for success and TILEDB_ERR for error.
+ */
+TILEDB_EXPORT int tiledb_config_iter_free(tiledb_config_iter_t* config_iter);
+
+/**
+ * Retrieves the config param and value currently pointed by the iterator.
+ *
+ * @param config_iter The config iterator.
+ * @param param The config parameter to be retrieved (`nullptr` if the iterator
+ *     is at the end).
+ * @param value The config value to be retrieved (`nullptr` if the iterator
+ *     is at the end).
+ * @param error Error object returned upon error (`nullptr` if there is
+ *     no error).
+ * @return TILEDB_OK for success and TILEDB_ERR for error.
+ */
+TILEDB_EXPORT int tiledb_config_iter_here(
+    tiledb_config_iter_t* config_iter,
+    const char** param,
+    const char** value,
+    tiledb_error_t** error);
+
+/**
+ * Moves the iterator to the next param.
+ *
+ * @param config_iter The config iterator.
+ * @param error Error object returned upon error (`nullptr` if there is
+ *     no error).
+ * @return TILEDB_OK for success and TILEDB_ERR for error.
+ */
+TILEDB_EXPORT int tiledb_config_iter_next(
+    tiledb_config_iter_t* config_iter, tiledb_error_t** error);
+
+/**
+ * Checks if the iterator is done.
+ *
+ * @param config_iter The config iterator.
+ * @param done Sets this to `true` if the iterator is done.
+ * @param error Error object returned upon error (`nullptr` if there is
+ *     no error).
+ * @return TILEDB_OK for success and TILEDB_ERR for error.
+ */
+TILEDB_EXPORT int tiledb_config_iter_done(
+    tiledb_config_iter_t* config_iter, int* done, tiledb_error_t** error);
 
 /* ********************************* */
 /*              CONTEXT              */
@@ -401,9 +554,15 @@ TILEDB_EXPORT int tiledb_ctx_create(
  */
 TILEDB_EXPORT int tiledb_ctx_free(tiledb_ctx_t* ctx);
 
-/* ********************************* */
-/*              ERROR                */
-/* ********************************* */
+/**
+ * Retrieves the config from a TileDB context.
+ *
+ * @param ctx The TileDB context to be created.
+ * @param config The config to be retrieved.
+ * @return TILEDB_OK for success and TILEDB_OOM or TILEDB_ERR for error.
+ */
+TILEDB_EXPORT int tiledb_ctx_get_config(
+    tiledb_ctx_t* ctx, tiledb_config_t** config);
 
 /**
  * Retrieves the last TileDB error associated with a TileDB context.
@@ -412,27 +571,20 @@ TILEDB_EXPORT int tiledb_ctx_free(tiledb_ctx_t* ctx);
  * @param err The last error, or NULL if no error has been raised.
  * @return TILEDB_OK for success and TILEDB_OOM or TILEDB_ERR for error.
  */
-TILEDB_EXPORT int tiledb_error_last(tiledb_ctx_t* ctx, tiledb_error_t** err);
+TILEDB_EXPORT int tiledb_ctx_get_last_error(
+    tiledb_ctx_t* ctx, tiledb_error_t** err);
 
 /**
- * Returns the error message associated with a TileDB error object.
+ * Checks if a given storage filesystem backend is supported.
  *
  * @param ctx The TileDB context.
- * @param err A TileDB error object.
- * @param errmsg A constant pointer to the error message.
+ * @param fs The filesystem to be checked.
+ * @param is_supported Sets it to `true` if the filesystem is supported, and
+ * `false` otherwise.
  * @return TILEDB_OK for success and TILEDB_ERR for error.
  */
-TILEDB_EXPORT int tiledb_error_message(
-    tiledb_ctx_t* ctx, tiledb_error_t* err, const char** errmsg);
-
-/**
- * Free's the resources associated with a TileDB error object.
- *
- * @param ctx The TileDB context.
- * @param err The TileDB error object.
- * @return TILEDB_OK for success and TILEDB_ERR for error.
- */
-TILEDB_EXPORT int tiledb_error_free(tiledb_ctx_t* ctx, tiledb_error_t* err);
+TILEDB_EXPORT int tiledb_ctx_is_supported_fs(
+    tiledb_ctx_t* ctx, tiledb_filesystem_t fs, int* is_supported);
 
 /* ********************************* */
 /*                GROUP              */
@@ -553,6 +705,17 @@ TILEDB_EXPORT int tiledb_attribute_get_cell_val_num(
     unsigned int* cell_val_num);
 
 /**
+ * Retrieves the cell size for this attribute.
+ *
+ * @param ctx The TileDB context.
+ * @param attr The attribute.
+ * @param cell_size The cell size to be retrieved.
+ * @return TILEDB_OK for success and TILEDB_ERR for error.
+ */
+TILEDB_EXPORT int tiledb_attribute_get_cell_size(
+    tiledb_ctx_t* ctx, const tiledb_attribute_t* attr, uint64_t* cell_size);
+
+/**
  * Dumps the contents of an attribute in ASCII form to some output (e.g.,
  * file or stdout).
  *
@@ -630,7 +793,7 @@ TILEDB_EXPORT int tiledb_domain_add_dimension(
  * @param dim The retrieved dimension object.
  * @return TILEDB_OK for success and TILEDB_ERR for error.
  */
-TILEDB_EXPORT int tiledb_dimension_from_index(
+TILEDB_EXPORT int tiledb_domain_get_dimension_from_index(
     tiledb_ctx_t* ctx,
     const tiledb_domain_t* domain,
     unsigned int index,
@@ -645,7 +808,7 @@ TILEDB_EXPORT int tiledb_dimension_from_index(
  * @param dim The retrieved dimension object.
  * @return TILEDB_OK for success and TILEDB_ERR for error.
  */
-TILEDB_EXPORT int tiledb_dimension_from_name(
+TILEDB_EXPORT int tiledb_domain_get_dimension_from_name(
     tiledb_ctx_t* ctx,
     const tiledb_domain_t* domain,
     const char* name,
@@ -729,13 +892,6 @@ TILEDB_EXPORT int tiledb_dimension_get_type(
 TILEDB_EXPORT int tiledb_dimension_get_domain(
     tiledb_ctx_t* ctx, const tiledb_dimension_t* dim, void** domain);
 
-
-TILEDB_EXPORT int tiledb_dimension_get_domain_i(
-    tiledb_ctx_t* ctx, const tiledb_dimension_t* dim, int** domain){
-    void ** d = reinterpret_cast <void **> (domain);
-    return tiledb_dimension_get_domain(ctx,dim, d);
-    };
-
 /**
  * Retrieves the tile extent of the dimension.
  *
@@ -768,10 +924,13 @@ TILEDB_EXPORT int tiledb_dimension_dump(
  *
  * @param ctx The TileDB context.
  * @param array_schema The TileDB array schema to be created.
+ * @param array_type The array type.
  * @return TILEDB_OK for success and TILEDB_OOM or TILEDB_ERR for error.
  */
 TILEDB_EXPORT int tiledb_array_schema_create(
-    tiledb_ctx_t* ctx, tiledb_array_schema_t** array_schema);
+    tiledb_ctx_t* ctx,
+    tiledb_array_schema_t** array_schema,
+    tiledb_array_type_t array_type);
 
 /**
  * Destroys an array schema, freeing-up memory.
@@ -810,18 +969,6 @@ TILEDB_EXPORT int tiledb_array_schema_set_domain(
     tiledb_domain_t* domain);
 
 /**
- * Sets the array as a key-value store. This function will create
- * and set a default domain for the array, as well as some extra
- * special attributes for the keys.
- *
- * @param ctx The TileDB context.
- * @param array_schema The array schema.
- * @return TILEDB_OK for success and TILEDB_ERR for error.
- */
-TILEDB_EXPORT int tiledb_array_schema_set_as_kv(
-    tiledb_ctx_t* ctx, tiledb_array_schema_t* array_schema);
-
-/**
  * Sets the tile capacity.
  *
  * @param ctx The TileDB context.
@@ -857,19 +1004,6 @@ TILEDB_EXPORT int tiledb_array_schema_set_tile_order(
     tiledb_ctx_t* ctx,
     tiledb_array_schema_t* array_schema,
     tiledb_layout_t tile_order);
-
-/**
- * Sets the array type.
- *
- * @param ctx The TileDB context.
- * @param array_schema The array schema.
- * @param array_type The array type to be set.
- * @return TILEDB_OK for success and TILEDB_ERR for error.
- */
-TILEDB_EXPORT int tiledb_array_schema_set_array_type(
-    tiledb_ctx_t* ctx,
-    tiledb_array_schema_t* array_schema,
-    tiledb_array_type_t array_type);
 
 /**
  * Sets the coordinates compressor.
@@ -1009,18 +1143,6 @@ TILEDB_EXPORT int tiledb_array_schema_get_domain(
     tiledb_domain_t** domain);
 
 /**
- * Checks if the array is defined as a key-value store.
- *
- * @param ctx The TileDB context.
- * @param array_schema The array schema.
- * @param as_kv This will be set to `true` if the array is defined as
- *     a key-value store, and `false` otherwise.
- * @return TILEDB_OK for success and TILEDB_ERR for error.
- */
-TILEDB_EXPORT int tiledb_array_schema_get_as_kv(
-    tiledb_ctx_t* ctx, tiledb_array_schema_t* array_schema, int* as_kv);
-
-/**
  * Retrieves the tile order.
  *
  * @param ctx The TileDB context.
@@ -1038,13 +1160,13 @@ TILEDB_EXPORT int tiledb_array_schema_get_tile_order(
  *
  * @param ctx The TileDB context.
  * @param array_schema The array schema.
- * @param num_attributes The number of attributes to be retrieved.
+ * @param attribute_ The number of attributes to be retrieved.
  * @return TILEDB_OK for success and TILEDB_ERR for error.
  */
-TILEDB_EXPORT int tiledb_array_schema_get_num_attributes(
+TILEDB_EXPORT int tiledb_array_schema_get_attribute_num(
     tiledb_ctx_t* ctx,
     const tiledb_array_schema_t* array_schema,
-    unsigned int* num_attributes);
+    unsigned int* attribute_num);
 
 /**
  * Retrieves a given attribute given it's index
@@ -1058,7 +1180,7 @@ TILEDB_EXPORT int tiledb_array_schema_get_num_attributes(
  * @param attr The attribute object to retrieve.
  * @return TILEDB_OK for success and TILEDB_ERR for error.
  */
-TILEDB_EXPORT int tiledb_attribute_from_index(
+TILEDB_EXPORT int tiledb_array_schema_get_attribute_from_index(
     tiledb_ctx_t* ctx,
     const tiledb_array_schema_t* array_schema,
     unsigned int index,
@@ -1073,7 +1195,7 @@ TILEDB_EXPORT int tiledb_attribute_from_index(
  * @param attr THe attribute object to retrieve.
  * @return TILEDB_OK for success and TILEDB_ERR for error.
  */
-TILEDB_EXPORT int tiledb_attribute_from_name(
+TILEDB_EXPORT int tiledb_array_schema_get_attribute_from_name(
     tiledb_ctx_t* ctx,
     const tiledb_array_schema_t* array_schema,
     const char* name,
@@ -1212,58 +1334,13 @@ TILEDB_EXPORT int tiledb_query_set_layout(
 TILEDB_EXPORT int tiledb_query_free(tiledb_ctx_t* ctx, tiledb_query_t* query);
 
 /**
- * Sets a key-value store object to the query. A write query will write
- * the contents of the key-value store into a sparse TileDB array. If it
- * is a read query, it will retrieve the results into the key-value
- * store object.
- *
- * @param ctx The TileDB context.
- * @param query The query.
- * @param kv They key-value store structure.
- * @return TILEDB_OK for success and TILEDB_ERR for error.
- *
- * @note If the query is a read query on a specific key, it is important
- *     to call `tiledb_query_set_kv_key` **before** calling this function.
- */
-TILEDB_EXPORT int tiledb_query_set_kv(
-    tiledb_ctx_t* ctx, tiledb_query_t* query, tiledb_kv_t* kv);
-
-/**
- * Sets a key-value key for a read query. This will internally be converted
- * into a unary subarray query.
- *
- * @param ctx The TileDB context.
- * @param query The query.
- * @param key They key that is queried.
- * @param type The type of the key.
- * @param key_size The key size in bytes.
- * @return TILEDB_OK for success and TILEDB_ERR for error.
- *
- * @note If no key is set with this function for a query, then the query
- * will retrieve **all** key-value items from the TileDB array into the
- * set key-value object after query submission completes. On the other hand,
- * if a key is set, note that the key itself will **not** be retrieved in
- * the key-value store from the TileDB array after query completion (since
- * it is redundant).
- */
-TILEDB_EXPORT int tiledb_query_set_kv_key(
-    tiledb_ctx_t* ctx,
-    tiledb_query_t* query,
-    const void* key,
-    tiledb_datatype_t type,
-    uint64_t key_size);
-
-/**
  * Submits a TileDB query.
  *
  * @param ctx The TileDB context.
  * @param query The query to be submitted.
  * @return TILEDB_OK for success and TILEDB_OOM or TILEDB_ERR for error.
  *
- * @note This function essentially opens the array associated with the query.
- *     Some metadata structures are loaded in main memory for this array.
- *     In order to flush these data structures and free up memory, invoke
- *     *tiledb_query_free*.
+ * @note Always invoke `tiledb_query_free` after the query is completed.
  */
 TILEDB_EXPORT int tiledb_query_submit(tiledb_ctx_t* ctx, tiledb_query_t* query);
 
@@ -1276,10 +1353,7 @@ TILEDB_EXPORT int tiledb_query_submit(tiledb_ctx_t* ctx, tiledb_query_t* query);
  * @param callback_data The data to be passed to the callback function.
  * @return TILEDB_OK for success and TILEDB_OOM or TILEDB_ERR for error.
  *
- * @note This function essentially opens the array associated with the query.
- *     Some metadata structures are loaded in main memory for this array.
- *     In order to flush these data structures and free up memory, invoke
- *     *tiledb_query_free*.
+ * @note Always invoke `tiledb_query_free` after the query is completed.
  */
 TILEDB_EXPORT int tiledb_query_submit_async(
     tiledb_ctx_t* ctx,
@@ -1356,6 +1430,45 @@ TILEDB_EXPORT int tiledb_array_create(
  */
 TILEDB_EXPORT int tiledb_array_consolidate(
     tiledb_ctx_t* ctx, const char* array_uri);
+
+/**
+ * Retrieves the non-empty domain from an array. This is the union of the
+ * non-empty domains of the array fragments.
+ *
+ * @param ctx The TileDB context
+ * @param array_uri The array URI.
+ * @param domain The domain to be retrieved.
+ * @param is_empty `true` if the non-empty domain is empty (i.e., the
+ *     array does not contain any data yet).
+ * @return TILEDB_OK for success and TILEDB_ERR for error.
+ */
+TILEDB_EXPORT int tiledb_array_get_non_empty_domain(
+    tiledb_ctx_t* ctx, const char* array_uri, void* domain, int* is_empty);
+
+/**
+ * Computes an upper bound on the buffer sizes required for a read
+ * query, for a given subarray and set of attributes.
+ *
+ * @param ctx The TileDB context.
+ * @param array_uri The array URI.
+ * @param subarray The subarray to focus on. Note that it must have the same
+ *     underlying type as the array domain.
+ * @param attributes The attributes to focus on.
+ * @param attribute_num The number of attributes.
+ * @param buffer_sizes The buffer sizes to be retrieved. Note that one
+ *     buffer size corresponds to a fixed-sized attributes, and two
+ *     buffer sizes for a variable-sized attribute (the first is the
+ *     size of the offsets, whereas the second is the size of the
+ *     actual variable-sized cell values.
+ * @return TILEDB_OK for success and TILEDB_ERR for error.
+ */
+TILEDB_EXPORT int tiledb_array_compute_max_read_buffer_sizes(
+    tiledb_ctx_t* ctx,
+    const char* array_uri,
+    const void* subarray,
+    const char** attributes,
+    unsigned attribute_num,
+    uint64_t* buffer_sizes);
 
 /* ********************************* */
 /*          OBJECT MANAGEMENT        */
@@ -1437,226 +1550,400 @@ TILEDB_EXPORT int tiledb_object_walk(
  * @param data The data passed in the callback as the last argument.
  * @return TILEDB_OK for success and TILEDB_ERR for error.
  */
-TILEDB_EXPORT int tiledb_object_ls(
+TILEDB_EXPORT int tiledb_ls(
     tiledb_ctx_t* ctx,
     const char* path,
     int (*callback)(const char*, tiledb_object_t, void*),
     void* data);
 
 /* ****************************** */
-/*             KEY-VALUE          */
+/*         KEY-VALUE SCHEMA       */
 /* ****************************** */
 
 /**
- * Creates a key-value store object. This object is used
- * to write/read key-values to/from a TileDB array. This key-value store
- * has some schema defined by the input attribute names and types. One
- * can add values to the object via the C-API and then set is into
- * a query to be written to a TileDB array, or one can set it into
- * a read query that retrieves the key-values from a TileDB array,
- * and then use the C-API to get the various keys/values in the object.
+ * Creates a TileDB key-value schema object.
  *
  * @param ctx The TileDB context.
- * @param kv The key-value store to be created.
- * @param attribute_num The number of attributes in the key-value store.
- * @param attributes The attribute names.
- * @param types The attribute types.
- * @param nitems The number of items of (the attribute type) stored in a
- *     single attribute value.
+ * @param kv_schema The TileDB key-value schema to be created.
  * @return TILEDB_OK for success and TILEDB_OOM or TILEDB_ERR for error.
  */
-TILEDB_EXPORT int tiledb_kv_create(
-    tiledb_ctx_t* ctx,
-    tiledb_kv_t** kv,
-    unsigned int attribute_num,
-    const char** attributes,
-    tiledb_datatype_t* types,
-    unsigned int* nitems);
+TILEDB_EXPORT int tiledb_kv_schema_create(
+    tiledb_ctx_t* ctx, tiledb_kv_schema_t** kv_schema);
 
 /**
- * Frees a key-value store object.
+ * Destroys a key-value schema, freeing-up memory.
  *
  * @param ctx The TileDB context.
- * @param kv The key-value store to be freed.
+ * @param kv_schema The key-value schema to be destroyed.
  * @return TILEDB_OK for success and TILEDB_ERR for error.
  */
-TILEDB_EXPORT int tiledb_kv_free(tiledb_ctx_t* ctx, tiledb_kv_t* kv);
+TILEDB_EXPORT int tiledb_kv_schema_free(
+    tiledb_ctx_t* ctx, tiledb_kv_schema_t* kv_schema);
 
 /**
- * Adds a key to a key-value store.
+ * Adds an attribute to a key-value schema.
  *
  * @param ctx The TileDB context.
- * @param kv The key-value store.
- * @param key The key to be added.
- * @param key_type The key type.
+ * @param kv_schema The key-value schema.
+ * @param attr The attribute to be added.
+ * @return TILEDB_OK for success and TILEDB_ERR for error.
+ */
+TILEDB_EXPORT int tiledb_kv_schema_add_attribute(
+    tiledb_ctx_t* ctx, tiledb_kv_schema_t* kv_schema, tiledb_attribute_t* attr);
+
+/**
+ * Checks the correctness of the key-value schema.
+ *
+ * @param ctx The TileDB context.
+ * @param kv_schema The key-value schema.
+ * @return TILEDB_OK if the key-value schema is correct and TILEDB_ERR upon any
+ *     error.
+ */
+TILEDB_EXPORT int tiledb_kv_schema_check(
+    tiledb_ctx_t* ctx, tiledb_kv_schema_t* kv_schema);
+
+/**
+ * Retrieves the schema of a key-value store from the disk, creating a
+ * key-value schema struct.
+ *
+ * @param ctx The TileDB context.
+ * @param kv_schema The key-value schema to be retrieved, or NULL upon error.
+ * @param kv_uri The key-value store whose schema will be retrieved.
+ * @return TILEDB_OK for success and TILEDB_OOM or TILEDB_ERR for error.
+ */
+TILEDB_EXPORT int tiledb_kv_schema_load(
+    tiledb_ctx_t* ctx, tiledb_kv_schema_t** kv_schema, const char* kv_uri);
+
+/**
+ * Retrieves the number of array attributes.
+ *
+ * @param ctx The TileDB context.
+ * @param kv_schema The key-value schema.
+ * @param attribute_num The number of attributes to be retrieved.
+ * @return TILEDB_OK for success and TILEDB_ERR for error.
+ */
+TILEDB_EXPORT int tiledb_kv_schema_get_attribute_num(
+    tiledb_ctx_t* ctx,
+    const tiledb_kv_schema_t* kv_schema,
+    unsigned int* attribute_num);
+
+/**
+ * Retrieves a given attribute given it's index
+ *
+ * Attributes are ordered the same way they were defined
+ * when constructing the key-value schema.
+ *
+ * @param ctx The TileDB context.
+ * @param kv_schema The key-value schema.
+ * @param index The index of the attribute to retrieve.
+ * @param attr The attribute object to retrieve.
+ * @return TILEDB_OK for success and TILEDB_ERR for error.
+ */
+TILEDB_EXPORT int tiledb_kv_schema_get_attribute_from_index(
+    tiledb_ctx_t* ctx,
+    const tiledb_kv_schema_t* kv_schema,
+    unsigned int index,
+    tiledb_attribute_t** attr);
+
+/**
+ * Retrieves a given attribute given its name (key)
+ *
+ * @param ctx The TileDB context.
+ * @param kv_schema The key-value schema.
+ * @param name The name (key) of the attribute to retrieve.
+ * @param attr THe attribute object to retrieve.
+ * @return TILEDB_OK for success and TILEDB_ERR for error.
+ */
+TILEDB_EXPORT int tiledb_kv_schema_get_attribute_from_name(
+    tiledb_ctx_t* ctx,
+    const tiledb_kv_schema_t* kv_schema,
+    const char* name,
+    tiledb_attribute_t** attr);
+
+/**
+ * Dumps the key-value schema in ASCII format in the selected output.
+ *
+ * @param ctx The TileDB context.
+ * @param kv_schema The key-value schema.
+ * @param out The output.
+ * @return TILEDB_OK for success and TILEDB_ERR for error.
+ */
+TILEDB_EXPORT int tiledb_kv_schema_dump(
+    tiledb_ctx_t* ctx, const tiledb_kv_schema_t* kv_schema, FILE* out);
+
+/* ****************************** */
+/*          KEY-VALUE ITEM        */
+/* ****************************** */
+
+/**
+ * Creates a key-value item.
+ *
+ * @param ctx The TileDB context.
+ * @param kv_item The key-value item to be created.
+ * @return TILEDB_OK for success and TILEDB_OOM or TILEDB_ERR for error.
+ */
+TILEDB_EXPORT int tiledb_kv_item_create(
+    tiledb_ctx_t* ctx, tiledb_kv_item_t** kv_item);
+
+/**
+ * Frees a key-value item.
+ *
+ * @param ctx The TileDB context.
+ * @param kv_item The key-value item to be freed.
+ * @return TILEDB_OK for success and TILEDB_ERR for error.
+ */
+TILEDB_EXPORT int tiledb_kv_item_free(
+    tiledb_ctx_t* ctx, tiledb_kv_item_t* kv_item);
+
+/**
+ * Set the key in the key-value item.
+ *
+ * @param ctx The TileDB context.
+ * @param kv_item The key-value item.
+ * @param key The key to be set.
+ * @param key_type The key type to be set.
  * @param key_size The key size (in bytes).
  * @return TILEDB_OK for success and TILEDB_ERR for error.
  */
-TILEDB_EXPORT int tiledb_kv_add_key(
+TILEDB_EXPORT int tiledb_kv_item_set_key(
     tiledb_ctx_t* ctx,
-    tiledb_kv_t* kv,
+    tiledb_kv_item_t* kv_item,
     const void* key,
     tiledb_datatype_t key_type,
     uint64_t key_size);
 
 /**
- * Adds a value for a particular attribute index. Note that the target
- * attribute must be receiving fixed-sized values. The size of the value
- * will be inferred by the type and number of values the target attribute
- * receives.
+ * Sets a value for a particular attribute to the key-value item.
+ * Note that this function works for both fixed- and variable-sized
+ * attributes.
  *
  * @param ctx The TileDB context.
- * @param kv The key-value store.
- * @param attribute_idx The index of the attribute whose value is added.
+ * @param kv_item The key-value item.
+ * @param attribute The attribute name.
  * @param value The value to be added.
+ * @param value_type The value type.
+ * @param value_size The value size in bytes.
  * @return TILEDB_OK for success and TILEDB_ERR for error.
  */
-TILEDB_EXPORT int tiledb_kv_add_value(
+TILEDB_EXPORT int tiledb_kv_item_set_value(
     tiledb_ctx_t* ctx,
-    tiledb_kv_t* kv,
-    unsigned int attribute_idx,
-    const void* value);
-
-/**
- * Adds a value for a particular attribute index. The target attribute must be
- * accepting variable-sized values.
- *
- * @param ctx The TileDB context.
- * @param kv The key-value store.
- * @param attribute_idx The index of the attribute whose value is added.
- * @param value The value to be added.
- * @param value_size The size of `value` in bytes.
- * @return TILEDB_OK for success and TILEDB_ERR for error.
- */
-TILEDB_EXPORT int tiledb_kv_add_value_var(
-    tiledb_ctx_t* ctx,
-    tiledb_kv_t* kv,
-    unsigned int attribute_idx,
+    tiledb_kv_item_t* kv_item,
+    const char* attribute,
     const void* value,
+    tiledb_datatype_t value_type,
     uint64_t value_size);
 
 /**
- * Retrieves the number of keys in a key-value store.
+ * Gets the key in the key-value item.
  *
  * @param ctx The TileDB context.
- * @param kv The key-value store object.
- * @param num The number of keys to be retrieved.
+ * @param kv_item The key-value item.
+ * @param key The key to be retrieved.
+ * @param key_type The key type to be retrieved.
+ * @param key_size The key size (in bytes).
  * @return TILEDB_OK for success and TILEDB_ERR for error.
  */
-TILEDB_EXPORT int tiledb_kv_get_key_num(
-    tiledb_ctx_t* ctx, tiledb_kv_t* kv, uint64_t* num);
-
-/**
- * Retrieves the number of values on a particular attribute in a key-value
- * store. Note that the attributes are ordered in the way they were defined
- * upon creation of the key-value store object.
- *
- * @param ctx The TileDB context.
- * @param kv The key-value store object.
- * @param attribute_idx The index of the attribute.
- * @param num The number of values to be retrieved.
- * @return TILEDB_OK for success and TILEDB_ERR for error.
- */
-TILEDB_EXPORT int tiledb_kv_get_value_num(
+TILEDB_EXPORT int tiledb_kv_item_get_key(
     tiledb_ctx_t* ctx,
-    tiledb_kv_t* kv,
-    unsigned int attribute_idx,
-    uint64_t* num);
-
-/**
- * Retrieves a key from a key-value store object, based on a provided
- * index.
- *
- * @param ctx The TileDB context.
- * @param kv The key-value store.
- * @param key_idx The index of the key to be retrieved.
- * @param key The key to be retrieved. Note that only a pointer to the
- *     internal key buffer of the key-value store is retrieved - no copy
- *     is involved.
- * @param key_type The key type.
- * @param key_size The key size.
- * @return TILEDB_OK for success and TILEDB_ERR for error.
- *
- * @note This function provides a means of iterating over the stored keys.
- *     No particular assumption must be made about the order of the keys
- *     in the structure (it should be assumed as random).
- */
-TILEDB_EXPORT int tiledb_kv_get_key(
-    tiledb_ctx_t* ctx,
-    tiledb_kv_t* kv,
-    uint64_t key_idx,
-    void** key,
+    tiledb_kv_item_t* kv_item,
+    const void** key,
     tiledb_datatype_t* key_type,
     uint64_t* key_size);
 
 /**
- * Retrieves a value from a key-value store object, based on a provided
- * attribute and key-value index.
+ * Gets the value and value size on a given attribute from a key-value item.
  *
  * @param ctx The TileDB context.
- * @param kv The key-value store.
- * @param obj_idx The index of the key-value object from which the value
- *     will be retrieved.
- * @param attr_idx The index of the attribute whose value is retrieved.
- *     Note that the attributes are ordered in the way they were defined
- *     upon creation of the key-value store object.
- * @param value The value to be retrieved. Note that only a pointer to the
- *     internal buffers of the key-value store is retrieved - no copy
- *     is involved.
+ * @param kv_item The key-value item.
+ * @param attribute The attribute name.
+ * @param value The value to be retrieved.
+ * @param value_type The value type to be retrieved.
+ * @param value_size The value size to be retrieved.
  * @return TILEDB_OK for success and TILEDB_ERR for error.
- *
- * @note This function provides a means of iterating over the stored values.
- *     No particular assumption must be made about the order of the values
- *     in the structure (it should be assumed as random).
  */
-TILEDB_EXPORT int tiledb_kv_get_value(
+TILEDB_EXPORT int tiledb_kv_item_get_value(
     tiledb_ctx_t* ctx,
-    tiledb_kv_t* kv,
-    uint64_t obj_idx,
-    unsigned int attr_idx,
-    void** value);
-
-/**
- * Retrieves a variable-sized value from a key-value store object, based
- * on a provided attribute and key-value index.
- *
- * @param ctx The TileDB context.
- * @param kv The key-value store.
- * @param obj_idx The index of the key-value object from which the value
- *     will be retrieved.
- * @param attr_idx The index of the attribute whose value is retrieved.
- *     Note that the attributes are ordered in the way they were defined
- *     upon creation of the key-value store object.
- * @param value The value to be retrieved. Note that only a pointer to the
- *     internal buffers of the key-value store is retrieved - no copy
- *     is involved.
- * @param value_size The size of the value to be retrieved.
- * @return TILEDB_OK for success and TILEDB_ERR for error.
- *
- * @note This function provides a means of iterating over the stored values.
- *     No particular assumption must be made about the order of the values
- *     in the structure (it should be assumed as random).
- */
-TILEDB_EXPORT int tiledb_kv_get_value_var(
-    tiledb_ctx_t* ctx,
-    tiledb_kv_t* kv,
-    uint64_t obj_idx,
-    unsigned int attr_idx,
-    void** value,
+    tiledb_kv_item_t* kv_item,
+    const char* attribute,
+    const void** value,
+    tiledb_datatype_t* value_type,
     uint64_t* value_size);
 
+/* ****************************** */
+/*             KEY-VALUE          */
+/* ****************************** */
+
 /**
- * Sets the size to be allocated for the internal buffers. This is useful
- * when the key-value store object is used for reading from a TileDB array,
- * so pre-allocation provides memory managment control.
+ * Creates a key-value store from the input key-value schema.
+ *
+ * @param ctx The TileDB context.
+ * @param kv_uri The URI of the key-value store.
+ * @param kv_schema The key-value store schema.
+ * @return TILEDB_OK for success and TILEDB_ERR for error.
+ */
+TILEDB_EXPORT int tiledb_kv_create(
+    tiledb_ctx_t* ctx, const char* kv_uri, const tiledb_kv_schema_t* kv_schema);
+
+/**
+ * Consolidates the fragments of a key-value store into a single fragment.
+ *
+ * @param ctx The TileDB context.
+ * @param kv_uri The name of the TileDB key-value store to be consolidated.
+ * @return TILEDB_OK on success, and TILEDB_ERR on error.
+ */
+TILEDB_EXPORT int tiledb_kv_consolidate(tiledb_ctx_t* ctx, const char* kv_uri);
+
+/**
+ * Sets the parameter that dictates the maximum number of written items
+ * buffered in memory before a flush is initiated.
  *
  * @param ctx The TileDB context.
  * @param kv The key-value store.
- * @param nbytes The number of bytes to be allocated per buffer.
+ * @param max_items The number of maximum items to be set.
+ * @return TILEDB_OK on success, and TILEDB_ERR on error.
+ */
+TILEDB_EXPORT int tiledb_kv_set_max_items(
+    tiledb_ctx_t* ctx, tiledb_kv_t* kv, uint64_t max_items);
+
+/**
+ * Prepares a key-value store for reading/writing.
+ *
+ * @param ctx The TileDB context.
+ * @param kv The key-value store.
+ * @param kv_uri The URI of the key-value store.
+ * @param kv_schema The key-value store schema.
+ * @param attributes The attributes to focus on. `nullptr` indicates all
+ *     attributes. If the key-value object is used for writing key-value
+ *     items, **all** attributes must be specified.
+ * @param attribute_num The number of `attributes`.
+ * @return TILEDB_OK for success and TILEDB_OOM or TILEDB_ERR for error.
+ */
+TILEDB_EXPORT int tiledb_kv_open(
+    tiledb_ctx_t* ctx,
+    tiledb_kv_t** kv,
+    const char* kv_uri,
+    const char** attributes,
+    unsigned int attribute_num);
+
+/**
+ * Closes a key-value store and frees all memory. All bufferd written items
+ * will be flushed to persistent storage.
+ *
+ * @param ctx The TileDB context.
+ * @param kv The key-value store to be closed.
  * @return TILEDB_OK for success and TILEDB_ERR for error.
  */
-TILEDB_EXPORT int tiledb_kv_set_buffer_size(
-    tiledb_ctx_t* ctx, tiledb_kv_t* kv, uint64_t nbytes);
+TILEDB_EXPORT int tiledb_kv_close(tiledb_ctx_t* ctx, tiledb_kv_t* kv);
+
+/**
+ * Adds a key-value item to a key-value store. The item is buffered
+ * internally and periodically flushed to persistent storage.
+ * `tiledb_kv_flush` forces flushing the buffered items to storage.
+ *
+ * @param ctx The TileDB context.
+ * @param kv The key-value store.
+ * @param kv_item The key-value item to be added to the store.
+ * @return TILEDB_OK for success and TILEDB_ERR for error.
+ */
+TILEDB_EXPORT int tiledb_kv_add_item(
+    tiledb_ctx_t* ctx, tiledb_kv_t* kv, tiledb_kv_item_t* kv_item);
+
+/**
+ * Flushes the buffered items to persistent storage.
+ *
+ * @param ctx The TileDB context.
+ * @param kv The key-value store.
+ * @return TILEDB_OK for success and TILEDB_ERR for error.
+ */
+TILEDB_EXPORT int tiledb_kv_flush(tiledb_ctx_t* ctx, tiledb_kv_t* kv);
+
+/**
+ * Retrieves a key-value item based on the input key. If the item with
+ * the input key does not exist, `kv_item` is set to `nullptr`.
+ *
+ * @param ctx The TileDB context.
+ * @param kv The key-value store.
+ * @param kv_item The key-value item.
+ * @param key The key.
+ * @param key_type The key type.
+ * @param key_size The key size.
+ * @return TILEDB_OK for success and TILEDB_ERR for error.
+ */
+TILEDB_EXPORT int tiledb_kv_get_item(
+    tiledb_ctx_t* ctx,
+    tiledb_kv_t* kv,
+    tiledb_kv_item_t** kv_item,
+    const void* key,
+    tiledb_datatype_t key_type,
+    uint64_t key_size);
+
+/* ****************************** */
+/*          KEY-VALUE ITER        */
+/* ****************************** */
+
+/**
+ * Creates an iterator for a key-value store. This can be used only
+ * for reading. This sets the pointer to the first key-value item.
+ *
+ * @param ctx The TileDB context.
+ * @param kv_iter The key-value store iterator to be created.
+ * @param kv_uri The URI of the key-value store.
+ * @param kv_schema The key-value store schema.
+ * @param attributes The attributes to focus on. `nullptr` indicates all
+ *     attributes. If the key-value object is used for writing key-value
+ *     items, **all** attributes must be specified.
+ * @param attribute_num The number of `attributes`.
+ * @return TILEDB_OK for success and TILEDB_OOM or TILEDB_ERR for error.
+ */
+TILEDB_EXPORT int tiledb_kv_iter_create(
+    tiledb_ctx_t* ctx,
+    tiledb_kv_iter_t** kv_iter,
+    const char* kv_uri,
+    const char** attributes,
+    unsigned int attribute_num);
+
+/**
+ * Frees a key-value store iterator.
+ *
+ * @param ctx The TileDB context.
+ * @param kv_iter The key-value store iterator to be freed.
+ * @return TILEDB_OK for success and TILEDB_ERR for error.
+ */
+TILEDB_EXPORT int tiledb_kv_iter_free(
+    tiledb_ctx_t* ctx, tiledb_kv_iter_t* kv_iter);
+
+/**
+ * Retrieves the key-value item currently pointed by the iterator.
+ * Note that this function creates a new key-value item.
+ *
+ * @param ctx The TileDB context.
+ * @param kv_iter The key-value store iterator.
+ * @param kv_item The current key-value item to be retrieved.
+ * @return TILEDB_OK for success and TILEDB_OOM or TILEDB_ERR for error.
+ */
+TILEDB_EXPORT int tiledb_kv_iter_here(
+    tiledb_ctx_t* ctx, tiledb_kv_iter_t* kv_iter, tiledb_kv_item_t** kv_item);
+
+/**
+ * Moves the iterator to the next item.
+ *
+ * @param ctx The TileDB context.
+ * @param kv_iter The key-value store iterator.
+ * @return TILEDB_OK for success and TILEDB_ERR for error.
+ */
+TILEDB_EXPORT int tiledb_kv_iter_next(
+    tiledb_ctx_t* ctx, tiledb_kv_iter_t* kv_iter);
+
+/**
+ * Checks if the iterator is done.
+ *
+ * @param ctx The TileDB context.
+ * @param kv_iter The key-value store iterator.
+ * @param done Sets this to `true` if the iterator is done.
+ * @return TILEDB_OK for success and TILEDB_ERR for error.
+ */
+TILEDB_EXPORT int tiledb_kv_iter_done(
+    tiledb_ctx_t* ctx, tiledb_kv_iter_t* kv_iter, int* done);
 
 /* ****************************** */
 /*        VIRTUAL FILESYSTEM      */
@@ -1703,6 +1990,29 @@ TILEDB_EXPORT int tiledb_vfs_create_bucket(
  */
 TILEDB_EXPORT int tiledb_vfs_remove_bucket(
     tiledb_ctx_t* ctx, tiledb_vfs_t* vfs, const char* uri);
+
+/**
+ * Deletes the contents of an object-store bucket.
+ *
+ * @param ctx The TileDB context.
+ * @param vfs The virtual filesystem object.
+ * @param uri The URI of the bucket to be emptied.
+ * @return TILEDB_OK for success and TILEDB_ERR for error.
+ */
+TILEDB_EXPORT int tiledb_vfs_empty_bucket(
+    tiledb_ctx_t* ctx, tiledb_vfs_t* vfs, const char* uri);
+
+/**
+ * Checks if an object-store bucket is empty.
+ *
+ * @param ctx The TileDB context.
+ * @param vfs The virtual filesystem object.
+ * @param uri The URI of the bucket.
+ * @param is_empty Sets it to `1` if the input bucket is empty.
+ * @return TILEDB_OK for success and TILEDB_ERR for error.
+ */
+TILEDB_EXPORT int tiledb_vfs_is_empty_bucket(
+    tiledb_ctx_t* ctx, tiledb_vfs_t* vfs, const char* uri, int* is_empty);
 
 /**
  * Checks if an object-store bucket exists.
@@ -1787,26 +2097,74 @@ TILEDB_EXPORT int tiledb_vfs_file_size(
     tiledb_ctx_t* ctx, tiledb_vfs_t* vfs, const char* uri, uint64_t* size);
 
 /**
- * Renames a TileDB resource path.
+ * Renames a file or directory.
  *
  * @param ctx The TileDB context.
  * @param vfs The virtual filesystem object.
  * @param old_uri The old URI.
  * @param new_uri The new URI.
+ * @param force Move the file/directory even if the destination URI exists.
+ *     In the latter case, the destination URI is overwritten.
  * @return TILEDB_OK for success and TILEDB_ERR for error.
  */
 TILEDB_EXPORT int tiledb_vfs_move(
     tiledb_ctx_t* ctx,
     tiledb_vfs_t* vfs,
     const char* old_uri,
-    const char* new_uri);
+    const char* new_uri,
+    int force);
+
+/**
+ * Prepares a file for reading/writing.
+ *
+ * @param ctx The TileDB context.
+ * @param vfs The virtual filesystem object.
+ * @param uri The URI of the file.
+ * @param mode The mode in which the file is opened:
+ *     - TILEDB_VFS_READ <br>
+ *       The file is opened for reading. An error is returned if the file
+ *       does not exist.
+ *     - TILEDB_VFS_WRITE <br>
+ *       The file is opened for writing. If the file exists, it will be
+ *       overwritten.
+ *     - TILEDB_VFS_APPEND <b>
+ *       The file is opened for writing. If the file exists, the write
+ *       will start from the end of the file. Note that S3 does not
+ *       support this operation and, thus, an error will be thrown in
+ *       that case.
+ * @param fh The file handle that is created. This will be used in
+ *     `tiledb_vfs_read`, `tiledb_vfs_write` and `tiledb_vfs_sync`.
+ * @return TILEDB_OK for success and TILEDB_ERR or TILEDB_OOM for error.
+ *
+ * @note If the file is closed after being opened, without having
+ *     written any data to it, the file will not be created. If you
+ *     wish to create an empty file, use `tiledb_vfs_touch`
+ *     instead.
+ */
+TILEDB_EXPORT int tiledb_vfs_open(
+    tiledb_ctx_t* ctx,
+    tiledb_vfs_t* vfs,
+    const char* uri,
+    tiledb_vfs_mode_t mode,
+    tiledb_vfs_fh_t** fh);
+
+/**
+ * Closes a file. This is flushes the buffered data into the file
+ * when the file was opened in write (or append) mode. It is particularly
+ * important to be called after S3 writes, as otherwise the writes will
+ * not take effect.
+ *
+ * @param ctx The TileDB context.
+ * @param fh The file handle.
+ * @return TILEDB_OK for success and TILEDB_ERR for error.
+ */
+TILEDB_EXPORT int tiledb_vfs_close(tiledb_ctx_t* ctx, tiledb_vfs_fh_t* fh);
 
 /**
  * Reads from a file.
  *
  * @param ctx The TileDB context.
- * @param vfs The virtual filesystem object.
- * @param uri The URI of the file.
+ * @param fh The URI file handle.
  * @param offset The offset in the file where the read begins.
  * @param buffer The buffer to read into.
  * @param nbytes Number of bytes to read.
@@ -1814,8 +2172,7 @@ TILEDB_EXPORT int tiledb_vfs_move(
  */
 TILEDB_EXPORT int tiledb_vfs_read(
     tiledb_ctx_t* ctx,
-    tiledb_vfs_t* vfs,
-    const char* uri,
+    tiledb_vfs_fh_t* fh,
     uint64_t offset,
     void* buffer,
     uint64_t nbytes);
@@ -1826,51 +2183,47 @@ TILEDB_EXPORT int tiledb_vfs_read(
  * file does not exist, it will be created.
  *
  * @param ctx The TileDB context.
- * @param vfs The virtual filesystem object.
- * @param uri The URI of the file.
+ * @param fh The URI file handle.
  * @param buffer The buffer to write from.
  * @param nbytes Number of bytes to write.
  * @return TILEDB_OK for success and TILEDB_ERR for error.
  */
 TILEDB_EXPORT int tiledb_vfs_write(
     tiledb_ctx_t* ctx,
-    tiledb_vfs_t* vfs,
-    const char* uri,
+    tiledb_vfs_fh_t* fh,
     const void* buffer,
     uint64_t nbytes);
 
 /**
- * Syncs (flushes) a file. This is important to call before starting to read
- * from the file.
+ * Syncs (flushes) a file.
  *
  * @param ctx The TileDB context.
- * @param vfs The virtual filesystem object.
- * @param uri The URI of the file.
+ * @param fh The URI file handle.
  * @return TILEDB_OK for success and TILEDB_ERR for error.
  *
- * @note Specifically for S3, this function **finalizes** the file, in the
- *     sense that from this point and onwards it becomes immutable. Any
- *     attempt to write to this file again will result in **overwriting**
- *     the old data.
+ * @note This is a noop for S3.
  */
-TILEDB_EXPORT int tiledb_vfs_sync(
-    tiledb_ctx_t* ctx, tiledb_vfs_t* vfs, const char* uri);
+TILEDB_EXPORT int tiledb_vfs_sync(tiledb_ctx_t* ctx, tiledb_vfs_fh_t* fh);
 
 /**
- * Checks if a given storage filesystem backend is supported.
+ * Frees a file handle.
  *
  * @param ctx The TileDB context.
- * @param vfs The virtual filesystem object.
- * @param fs The filesystem to be checked.
- * @param supports Sets it to `true` if the filesystem is supported, and `false`
- *     otherwise.
+ * @param fh The URI file handle.
  * @return TILEDB_OK for success and TILEDB_ERR for error.
  */
-TILEDB_EXPORT int tiledb_vfs_supports_fs(
-    tiledb_ctx_t* ctx,
-    tiledb_vfs_t* vfs,
-    tiledb_filesystem_t fs,
-    int* supports);
+TILEDB_EXPORT int tiledb_vfs_fh_free(tiledb_ctx_t* ctx, tiledb_vfs_fh_t* fh);
+
+/**
+ * Checks if a file handle is closed.
+ *
+ * @param ctx The TileDB context.
+ * @param fh The URI file handle.
+ * @param is_closed Set to `true` if the file handle is closed.
+ * @return TILEDB_OK for success and TILEDB_ERR for error.
+ */
+TILEDB_EXPORT int tiledb_vfs_fh_is_closed(
+    tiledb_ctx_t* ctx, tiledb_vfs_fh_t* fh, int* is_closed);
 
 /**
  * Touches a file, i.e., creates a new empty file.
@@ -1882,6 +2235,10 @@ TILEDB_EXPORT int tiledb_vfs_supports_fs(
  */
 TILEDB_EXPORT int tiledb_vfs_touch(
     tiledb_ctx_t* ctx, tiledb_vfs_t* vfs, const char* uri);
+
+/* ****************************** */
+/*              URI               */
+/* ****************************** */
 
 /**
  * Converts the given file URI to a null-terminated platform-native file path.

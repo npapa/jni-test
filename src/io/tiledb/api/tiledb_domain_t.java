@@ -21,28 +21,31 @@ public class tiledb_domain_t {
     return (obj == null) ? 0 : obj.swigCPtr;
   }
 
+  protected void finalize() {
+    delete();
+  }
+
   public synchronized void delete() {
     if (swigCPtr != 0) {
       if (swigCMemOwn) {
         swigCMemOwn = false;
-        throw new UnsupportedOperationException("C++ destructor does not have public access");
+        tiledbJNI.delete_tiledb_domain_t(swigCPtr);
       }
       swigCPtr = 0;
     }
   }
 
-  /** This constructor creates the proxy which initially does not create nor own any C memory */
-  public tiledb_domain_t() {
-    this(0, false);
+  public void setDomain_(SWIGTYPE_p_tiledb__Domain value) {
+    tiledbJNI.tiledb_domain_t_domain__set(swigCPtr, this, SWIGTYPE_p_tiledb__Domain.getCPtr(value));
   }
 
-  public void setDomain_(SWIGTYPE_p_void value) {
-    tiledbJNI.tiledb_domain_t_domain__set(swigCPtr, this, SWIGTYPE_p_void.getCPtr(value));
-  }
-
-  public SWIGTYPE_p_void getDomain_() {
+  public SWIGTYPE_p_tiledb__Domain getDomain_() {
     long cPtr = tiledbJNI.tiledb_domain_t_domain__get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
+    return (cPtr == 0) ? null : new SWIGTYPE_p_tiledb__Domain(cPtr, false);
+  }
+
+  public tiledb_domain_t() {
+    this(tiledbJNI.new_tiledb_domain_t(), true);
   }
 
 }

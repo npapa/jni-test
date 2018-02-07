@@ -48,18 +48,5 @@ public enum tiledb_filesystem_t {
   private static class SwigNext {
     private static int next = 0;
   }
-
-  public static class pointer{
-	  tiledb_filesystem_t tiledb_filesystem_t;
-	  public pointer(){
-		  tiledb_filesystem_t=null;
-	  }
-	  public tiledb_filesystem_t get() {
-		return tiledb_filesystem_t;
-	  }
-	  public void set(tiledb_filesystem_t tiledb_filesystem_t) {
-		this.tiledb_filesystem_t = tiledb_filesystem_t;
-	  }
-  }
 }
 

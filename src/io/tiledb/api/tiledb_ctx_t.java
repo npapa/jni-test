@@ -21,46 +21,49 @@ public class tiledb_ctx_t {
     return (obj == null) ? 0 : obj.swigCPtr;
   }
 
+  protected void finalize() {
+    delete();
+  }
+
   public synchronized void delete() {
     if (swigCPtr != 0) {
       if (swigCMemOwn) {
         swigCMemOwn = false;
-        throw new UnsupportedOperationException("C++ destructor does not have public access");
+        tiledbJNI.delete_tiledb_ctx_t(swigCPtr);
       }
       swigCPtr = 0;
     }
   }
 
-  /** This constructor creates the proxy which initially does not create nor own any C memory */
-  public tiledb_ctx_t() {
-    this(0, false);
+  public void setStorage_manager_(SWIGTYPE_p_tiledb__StorageManager value) {
+    tiledbJNI.tiledb_ctx_t_storage_manager__set(swigCPtr, this, SWIGTYPE_p_tiledb__StorageManager.getCPtr(value));
   }
 
-  public void setStorage_manager_(SWIGTYPE_p_void value) {
-    tiledbJNI.tiledb_ctx_t_storage_manager__set(swigCPtr, this, SWIGTYPE_p_void.getCPtr(value));
-  }
-
-  public SWIGTYPE_p_void getStorage_manager_() {
+  public SWIGTYPE_p_tiledb__StorageManager getStorage_manager_() {
     long cPtr = tiledbJNI.tiledb_ctx_t_storage_manager__get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
+    return (cPtr == 0) ? null : new SWIGTYPE_p_tiledb__StorageManager(cPtr, false);
   }
 
-  public void setLast_error_(SWIGTYPE_p_void value) {
-    tiledbJNI.tiledb_ctx_t_last_error__set(swigCPtr, this, SWIGTYPE_p_void.getCPtr(value));
+  public void setLast_error_(SWIGTYPE_p_tiledb__Status value) {
+    tiledbJNI.tiledb_ctx_t_last_error__set(swigCPtr, this, SWIGTYPE_p_tiledb__Status.getCPtr(value));
   }
 
-  public SWIGTYPE_p_void getLast_error_() {
+  public SWIGTYPE_p_tiledb__Status getLast_error_() {
     long cPtr = tiledbJNI.tiledb_ctx_t_last_error__get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
+    return (cPtr == 0) ? null : new SWIGTYPE_p_tiledb__Status(cPtr, false);
   }
 
-  public void setMtx_(SWIGTYPE_p_void value) {
-    tiledbJNI.tiledb_ctx_t_mtx__set(swigCPtr, this, SWIGTYPE_p_void.getCPtr(value));
+  public void setMtx_(SWIGTYPE_p_std__mutex value) {
+    tiledbJNI.tiledb_ctx_t_mtx__set(swigCPtr, this, SWIGTYPE_p_std__mutex.getCPtr(value));
   }
 
-  public SWIGTYPE_p_void getMtx_() {
+  public SWIGTYPE_p_std__mutex getMtx_() {
     long cPtr = tiledbJNI.tiledb_ctx_t_mtx__get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
+    return (cPtr == 0) ? null : new SWIGTYPE_p_std__mutex(cPtr, false);
+  }
+
+  public tiledb_ctx_t() {
+    this(tiledbJNI.new_tiledb_ctx_t(), true);
   }
 
 }

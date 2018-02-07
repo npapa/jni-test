@@ -21,28 +21,31 @@ public class tiledb_config_t {
     return (obj == null) ? 0 : obj.swigCPtr;
   }
 
+  protected void finalize() {
+    delete();
+  }
+
   public synchronized void delete() {
     if (swigCPtr != 0) {
       if (swigCMemOwn) {
         swigCMemOwn = false;
-        throw new UnsupportedOperationException("C++ destructor does not have public access");
+        tiledbJNI.delete_tiledb_config_t(swigCPtr);
       }
       swigCPtr = 0;
     }
   }
 
-  /** This constructor creates the proxy which initially does not create nor own any C memory */
-  public tiledb_config_t() {
-    this(0, false);
+  public void setConfig_(SWIGTYPE_p_tiledb__Config value) {
+    tiledbJNI.tiledb_config_t_config__set(swigCPtr, this, SWIGTYPE_p_tiledb__Config.getCPtr(value));
   }
 
-  public void setConfig_(SWIGTYPE_p_void value) {
-    tiledbJNI.tiledb_config_t_config__set(swigCPtr, this, SWIGTYPE_p_void.getCPtr(value));
-  }
-
-  public SWIGTYPE_p_void getConfig_() {
+  public SWIGTYPE_p_tiledb__Config getConfig_() {
     long cPtr = tiledbJNI.tiledb_config_t_config__get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
+    return (cPtr == 0) ? null : new SWIGTYPE_p_tiledb__Config(cPtr, false);
+  }
+
+  public tiledb_config_t() {
+    this(tiledbJNI.new_tiledb_config_t(), true);
   }
 
 }
