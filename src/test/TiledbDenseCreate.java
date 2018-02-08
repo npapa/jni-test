@@ -2,6 +2,7 @@ package test;
 
 //import io.tiledb.api.Domain;
 import io.tiledb.api.*;
+import io.tiledb.custom.ArrayUtils;
 import io.tiledb.custom.Version;
 
 public class TiledbDenseCreate {
@@ -21,24 +22,22 @@ public class TiledbDenseCreate {
 		tiledb_ctx_t ctx = tiledb.tiledb_ctx_tpp_value(ctxpp);
 		
 		//Create dimensions
-		intArray d1_domain = new intArray(2);
-		d1_domain.setitem(0, 1);
-		d1_domain.setitem(1, 4);
-		intArray d1_tile_extents = new intArray(1);
-		d1_tile_extents.setitem(0, 2);
+		long[] d1_domain_ = {1, 4};
+		uint64_tArray d1_domain = ArrayUtils.newUint64Array(d1_domain_);
+		long[] d1_tile_extents_ = {2};
+		uint64_tArray d1_tile_extents = ArrayUtils.newUint64Array(d1_tile_extents_);
 		SWIGTYPE_p_p_tiledb_dimension_t d1pp = tiledb.new_tiledb_dimension_tpp();
-		tiledb.tiledb_dimension_create(ctx, d1pp, "d1", tiledb_datatype_t.TILEDB_INT32, d1_domain.cast(), 
-				d1_tile_extents.cast());
+		tiledb.tiledb_dimension_create(ctx, d1pp, "d1", tiledb_datatype_t.TILEDB_UINT64, PointerUtils.toVoid(d1_domain), 
+				PointerUtils.toVoid(d1_tile_extents));
 		tiledb_dimension_t d1 = tiledb.tiledb_dimension_tpp_value(d1pp);
-		
-		intArray d2_domain = new intArray(2);
-		d2_domain.setitem(0, 1);
-		d2_domain.setitem(1, 88);
-		intArray d2_tile_extents = new intArray(1);
-		d2_tile_extents.setitem(0, 2);
+
+		long[] d2_domain_ = {1, 4};
+		uint64_tArray d2_domain = ArrayUtils.newUint64Array(d2_domain_);
+		long[] d2_tile_extents_ = {2};
+		uint64_tArray d2_tile_extents = ArrayUtils.newUint64Array(d2_tile_extents_);
 		SWIGTYPE_p_p_tiledb_dimension_t d2pp = tiledb.new_tiledb_dimension_tpp();
-		tiledb.tiledb_dimension_create(ctx, d2pp, "columns", tiledb_datatype_t.TILEDB_INT32, d2_domain.cast(),
-				d2_tile_extents.cast());
+		tiledb.tiledb_dimension_create(ctx, d2pp, "d2", tiledb_datatype_t.TILEDB_UINT64, PointerUtils.toVoid(d2_domain), 
+				PointerUtils.toVoid(d2_tile_extents));
 		tiledb_dimension_t d2 = tiledb.tiledb_dimension_tpp_value(d2pp);
 		
 
@@ -53,14 +52,15 @@ public class TiledbDenseCreate {
 		SWIGTYPE_p_p_tiledb_attribute_t a1pp = tiledb.new_tiledb_attribute_tpp();
 		tiledb.tiledb_attribute_create(ctx, a1pp, "a1", tiledb_datatype_t.TILEDB_INT32);
 	    tiledb_attribute_t a1 = tiledb.tiledb_attribute_tpp_value(a1pp);
-		tiledb.tiledb_attribute_set_compressor(ctx, a1, tiledb_compressor_t.TILEDB_BLOSC, -1);
+		tiledb.tiledb_attribute_set_compressor(ctx, a1, tiledb_compressor_t.TILEDB_GZIP, -1);
 		tiledb.tiledb_attribute_set_cell_val_num(ctx, a1, 1);
+		
 		
 		SWIGTYPE_p_p_tiledb_attribute_t a2pp = tiledb.new_tiledb_attribute_tpp();
 		tiledb.tiledb_attribute_create(ctx, a2pp, "a2", tiledb_datatype_t.TILEDB_CHAR);
 	    tiledb_attribute_t a2 = tiledb.tiledb_attribute_tpp_value(a2pp);
 		tiledb.tiledb_attribute_set_compressor(ctx, a2, tiledb_compressor_t.TILEDB_GZIP, -1);
-		tiledb.tiledb_attribute_set_cell_val_num(ctx, a2, tiledb.tiledb_var_num());
+		tiledb.tiledb_attribute_set_cell_val_num(ctx, a2, -1);
 
 		SWIGTYPE_p_p_tiledb_attribute_t a3pp = tiledb.new_tiledb_attribute_tpp();
 		tiledb.tiledb_attribute_create(ctx, a3pp, "a3", tiledb_datatype_t.TILEDB_FLOAT32);
@@ -86,11 +86,12 @@ public class TiledbDenseCreate {
 		    System.exit(1);
 		}
 		// Create array
-	    if(tiledb.tiledb_array_create(ctx, "my_dense_array1", array_schema)!= tiledb.TILEDB_OK){
+	    if(tiledb.tiledb_array_create(ctx, "my_dense_array", array_schema)!= tiledb.TILEDB_OK){
 	    	System.out.println("error");
 	    }
 		
-
+	    tiledb.tiledb_array_schema_dump1(ctx, array_schema);
+	    
 		// Clean up
 		tiledb.tiledb_attribute_free(ctx, a1);
 		tiledb.tiledb_attribute_free(ctx, a2);

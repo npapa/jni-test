@@ -13,4 +13,8 @@ public class PointerUtils {
 	public static SWIGTYPE_p_void toVoid(floatArray p){
 		return new SWIGTYPE_p_void(floatArray.getCPtr(p),false);
 	}
+
+	public static SWIGTYPE_p_void toVoid(uint64_tArray p){
+		return new SWIGTYPE_p_void(uint64_tArray.getCPtr(p),false);
+	}
 }

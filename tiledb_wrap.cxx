@@ -345,7 +345,6 @@ static void delete_charpArray(char * *ary) {
 static char * charpArray_getitem(char * *ary, int index) {
     return ary[index];
 }
-
 static void charpArray_setitem(char * *ary, int index, char * value) {
   ary[index]= new char[sizeof(value)];
   strcpy(ary[index], value);
@@ -4693,6 +4692,24 @@ SWIGEXPORT jint JNICALL Java_io_tiledb_api_tiledbJNI_tiledb_1dimension_1get_1dom
 }
 
 
+SWIGEXPORT jint JNICALL Java_io_tiledb_api_tiledbJNI_tiledb_1array_1schema_1dump1(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  jint jresult = 0 ;
+  tiledb_ctx_t *arg1 = (tiledb_ctx_t *) 0 ;
+  tiledb_array_schema_t *arg2 = (tiledb_array_schema_t *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(tiledb_ctx_t **)&jarg1; 
+  arg2 = *(tiledb_array_schema_t **)&jarg2; 
+  result = (int)tiledb_array_schema_dump1(arg1,(tiledb_array_schema_t const *)arg2);
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
 SWIGEXPORT jstring JNICALL Java_io_tiledb_api_tiledbJNI_tiledb_1coords(JNIEnv *jenv, jclass jcls) {
   jstring jresult = 0 ;
   char *result = 0 ;
@@ -7225,12 +7242,11 @@ SWIGEXPORT jint JNICALL Java_io_tiledb_api_tiledbJNI_tiledb_1query_1set_1buffers
   arg1 = *(tiledb_ctx_t **)&jarg1; 
   arg2 = *(tiledb_query_t **)&jarg2; 
   arg3 = *(char ***)&jarg3; 
-  
-  arg4 = (unsigned int)jarg4;
+  arg4 = (unsigned int)jarg4; 
   arg5 = *(void ***)&jarg5; 
   arg6 = *(uint64_t **)&jarg6; 
-  printf("sizes %d %d %d %d\n", arg6[0], arg6[1], arg6[2],arg6[3]); 
-  printf("values %d %d %c %f\n", ((int*)arg5[0])[5], ((int*)arg5[1])[5], ((char*)arg5[2])[5],((float*)arg5[3])[5]);
+  printf("arg: %s \n",(char*)arg5[2]);
+  fflush(stdout);
   result = (int)tiledb_query_set_buffers(arg1,arg2,(char const **)arg3,arg4,arg5,arg6);
   jresult = (jint)result; 
   return jresult;

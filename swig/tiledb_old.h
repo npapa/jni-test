@@ -74,6 +74,11 @@ TILEDB_EXPORT int tiledb_dimension_get_domain_i(
     tiledb_ctx_t* ctx, const tiledb_dimension_t* dim, int** domain){
     return tiledb_dimension_get_domain(ctx, dim, (void**) domain);
     };
+    
+    TILEDB_EXPORT int tiledb_array_schema_dump1(
+    tiledb_ctx_t* ctx, const tiledb_array_schema_t* array_schema){
+      return tiledb_array_schema_dump(ctx, array_schema, stdout);
+    };
 
 #undef TILEDB_EXPORT
 #ifdef __cplusplus

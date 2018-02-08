@@ -13,7 +13,7 @@ public class ArrayUtils {
 		return ret;
 	}
 
-	public static uint64_tArray newUint64Array(int[] array){
+	public static uint64_tArray newUint64Array(long[] array){
 		uint64_tArray ret = new uint64_tArray(array.length);
 		for (int i = 0; i < array.length; i++) {
 			ret.setitem(i, new BigInteger(array[i]+""));
@@ -33,9 +33,19 @@ public class ArrayUtils {
 		char[] array = s.toCharArray();
 		charArray ret = new charArray(array.length);
 		for (int i = 0; i < array.length; i++) {
+			System.out.print(array[i]);
 			ret.setitem(i, array[i]);
 		}
+		System.out.println();
 		return ret;
+	}
+	
+	public static String substring(charArray array, int start, int size){
+		char[] c = new char[size];
+		for (int i = start; i < start+size; i++) {
+			c[i-start]=array.getitem(i);
+		}
+		return new String(c);
 	}
 	
 }

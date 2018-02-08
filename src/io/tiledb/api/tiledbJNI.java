@@ -253,6 +253,7 @@ public class tiledbJNI {
   public final static native int tiledb_vfs_mode_tp_value(long jarg1);
   public final static native int tiledb_dimension_create__SWIG_0(long jarg1, tiledb_ctx_t jarg1_, long jarg2, String jarg3, int jarg4, long jarg5, long jarg6);
   public final static native int tiledb_dimension_get_domain_i(long jarg1, tiledb_ctx_t jarg1_, long jarg2, tiledb_dimension_t jarg2_, long jarg3);
+  public final static native int tiledb_array_schema_dump1(long jarg1, tiledb_ctx_t jarg1_, long jarg2, tiledb_array_schema_t jarg2_);
   public final static native String tiledb_coords();
   public final static native long tiledb_var_num();
   public final static native long tiledb_max_path();

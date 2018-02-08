@@ -71,20 +71,6 @@
 %include "typemaps.i"
 %include "enums.swg"
 %javaconst(1);
-
-
-
-
-
-
-
-int tiledb_dimension_create(
-    tiledb_ctx_t* ctx,
-    tiledb_dimension_t** dim,
-    const char* name,
-    tiledb_datatype_t type,
-    int* dim_domain,
-    int* tile_extent);
     
 
 %include "tiledb_old.h"
