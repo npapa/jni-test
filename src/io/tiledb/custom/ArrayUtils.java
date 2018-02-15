@@ -33,10 +33,10 @@ public class ArrayUtils {
 		char[] array = s.toCharArray();
 		charArray ret = new charArray(array.length);
 		for (int i = 0; i < array.length; i++) {
-			System.out.print(array[i]);
+			//System.out.print(array[i]);
 			ret.setitem(i, array[i]);
 		}
-		System.out.println();
+		//System.out.println();
 		return ret;
 	}
 	

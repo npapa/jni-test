@@ -23,6 +23,9 @@
 %include "cpointer.i"
 %pointer_functions(int, intp);
 %pointer_functions(int *, intpp);
+%pointer_functions(char *, charpp);
+%pointer_functions(unsigned int, uintp);
+%pointer_functions(unsigned long long, ullp);
 %pointer_functions(tiledb_config_t, tiledb_config_tp);
 %pointer_functions(tiledb_config_t *, tiledb_config_tpp);
 %pointer_functions(tiledb_config_iter_t, tiledb_config_iter_tp);
