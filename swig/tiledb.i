@@ -16,12 +16,14 @@
 %array_class(int, intArray);
 %array_class(uint64_t, uint64_tArray);
 %array_class(float, floatArray);
+%array_class(double, doubleArray);
 %array_class(char, charArray);
 %array_functions(char *, charpArray);
 %array_functions( void *, voidpArray )
 
 %include "cpointer.i"
 %pointer_functions(int, intp);
+%pointer_functions(float, floatp);
 %pointer_functions(int *, intpp);
 %pointer_functions(char *, charpp);
 %pointer_functions(unsigned int, uintp);

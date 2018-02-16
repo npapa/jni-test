@@ -47,5 +47,13 @@ public class ArrayUtils {
 		}
 		return new String(c);
 	}
+
+	public static doubleArray newDoubleArray(double[] array) {
+		doubleArray ret = new doubleArray(array.length);
+		for (int i = 0; i < array.length; i++) {
+			ret.setitem(i, array[i]);
+		}
+		return ret;
+	}
 	
 }

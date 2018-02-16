@@ -66,6 +66,28 @@ public class tiledb implements tiledbConstants {
     return tiledbJNI.intp_value(SWIGTYPE_p_int.getCPtr(obj));
   }
 
+  public static SWIGTYPE_p_float new_floatp() {
+    long cPtr = tiledbJNI.new_floatp();
+    return (cPtr == 0) ? null : new SWIGTYPE_p_float(cPtr, false);
+  }
+
+  public static SWIGTYPE_p_float copy_floatp(float value) {
+    long cPtr = tiledbJNI.copy_floatp(value);
+    return (cPtr == 0) ? null : new SWIGTYPE_p_float(cPtr, false);
+  }
+
+  public static void delete_floatp(SWIGTYPE_p_float obj) {
+    tiledbJNI.delete_floatp(SWIGTYPE_p_float.getCPtr(obj));
+  }
+
+  public static void floatp_assign(SWIGTYPE_p_float obj, float value) {
+    tiledbJNI.floatp_assign(SWIGTYPE_p_float.getCPtr(obj), value);
+  }
+
+  public static float floatp_value(SWIGTYPE_p_float obj) {
+    return tiledbJNI.floatp_value(SWIGTYPE_p_float.getCPtr(obj));
+  }
+
   public static SWIGTYPE_p_p_int new_intpp() {
     long cPtr = tiledbJNI.new_intpp();
     return (cPtr == 0) ? null : new SWIGTYPE_p_p_int(cPtr, false);
@@ -1068,6 +1090,11 @@ public class tiledb implements tiledbConstants {
 
   public static int tiledb_array_schema_dump_stdout(tiledb_ctx_t ctx, tiledb_array_schema_t array_schema) {
     return tiledbJNI.tiledb_array_schema_dump_stdout(tiledb_ctx_t.getCPtr(ctx), ctx, tiledb_array_schema_t.getCPtr(array_schema), array_schema);
+  }
+
+  public static SWIGTYPE_p_void derefVoid(SWIGTYPE_p_p_void in) {
+    long cPtr = tiledbJNI.derefVoid(SWIGTYPE_p_p_void.getCPtr(in));
+    return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
   }
 
   public static String tiledb_coords() {

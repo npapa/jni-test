@@ -27,6 +27,12 @@ public class tiledbJNI {
   public final static native void floatArray_setitem(long jarg1, floatArray jarg1_, int jarg2, float jarg3);
   public final static native long floatArray_cast(long jarg1, floatArray jarg1_);
   public final static native long floatArray_frompointer(long jarg1);
+  public final static native long new_doubleArray(int jarg1);
+  public final static native void delete_doubleArray(long jarg1);
+  public final static native double doubleArray_getitem(long jarg1, doubleArray jarg1_, int jarg2);
+  public final static native void doubleArray_setitem(long jarg1, doubleArray jarg1_, int jarg2, double jarg3);
+  public final static native long doubleArray_cast(long jarg1, doubleArray jarg1_);
+  public final static native long doubleArray_frompointer(long jarg1);
   public final static native long new_charArray(int jarg1);
   public final static native void delete_charArray(long jarg1);
   public final static native char charArray_getitem(long jarg1, charArray jarg1_, int jarg2);
@@ -46,6 +52,11 @@ public class tiledbJNI {
   public final static native void delete_intp(long jarg1);
   public final static native void intp_assign(long jarg1, int jarg2);
   public final static native int intp_value(long jarg1);
+  public final static native long new_floatp();
+  public final static native long copy_floatp(float jarg1);
+  public final static native void delete_floatp(long jarg1);
+  public final static native void floatp_assign(long jarg1, float jarg2);
+  public final static native float floatp_value(long jarg1);
   public final static native long new_intpp();
   public final static native long copy_intpp(long jarg1);
   public final static native void delete_intpp(long jarg1);
@@ -271,6 +282,7 @@ public class tiledbJNI {
   public final static native int tiledb_attribute_dump_stdout(long jarg1, tiledb_ctx_t jarg1_, long jarg2, tiledb_attribute_t jarg2_);
   public final static native int tiledb_domain_dump_stdout(long jarg1, tiledb_ctx_t jarg1_, long jarg2, tiledb_domain_t jarg2_);
   public final static native int tiledb_array_schema_dump_stdout(long jarg1, tiledb_ctx_t jarg1_, long jarg2, tiledb_array_schema_t jarg2_);
+  public final static native long derefVoid(long jarg1);
   public final static native String tiledb_coords();
   public final static native long tiledb_var_num();
   public final static native long tiledb_max_path();

@@ -313,6 +313,27 @@ SWIGINTERN floatArray *floatArray_frompointer(float *t){
   return (floatArray *) t;
 }
 
+typedef double doubleArray;
+
+SWIGINTERN doubleArray *new_doubleArray(int nelements){
+  return new double[nelements]();
+}
+SWIGINTERN void delete_doubleArray(doubleArray *self){
+  delete [] self;
+}
+SWIGINTERN double doubleArray_getitem(doubleArray *self,int index){
+  return self[index];
+}
+SWIGINTERN void doubleArray_setitem(doubleArray *self,int index,double value){
+  self[index] = value;
+}
+SWIGINTERN double *doubleArray_cast(doubleArray *self){
+  return self;
+}
+SWIGINTERN doubleArray *doubleArray_frompointer(double *t){
+  return (doubleArray *) t;
+}
+
 typedef char charArray;
 
 SWIGINTERN charArray *new_charArray(int nelements){
@@ -346,8 +367,7 @@ static char * charpArray_getitem(char * *ary, int index) {
     return ary[index];
 }
 static void charpArray_setitem(char * *ary, int index, char * value) {
-  ary[index]= new char[sizeof(value)];
-  strcpy(ary[index], value);
+    ary[index] = value;
 }
 
 
@@ -384,6 +404,27 @@ static void intp_assign(int *obj, int value) {
 }
 
 static int intp_value(int *obj) {
+  return *obj;
+}
+
+
+static float *new_floatp() { 
+  return new float(); 
+}
+
+static float *copy_floatp(float value) { 
+  return new float(value); 
+}
+
+static void delete_floatp(float *obj) { 
+  if (obj) delete obj; 
+}
+
+static void floatp_assign(float *obj, float value) {
+  *obj = value;
+}
+
+static float floatp_value(float *obj) {
   return *obj;
 }
 
@@ -1613,6 +1654,91 @@ SWIGEXPORT jlong JNICALL Java_io_tiledb_api_tiledbJNI_floatArray_1frompointer(JN
 }
 
 
+SWIGEXPORT jlong JNICALL Java_io_tiledb_api_tiledbJNI_new_1doubleArray(JNIEnv *jenv, jclass jcls, jint jarg1) {
+  jlong jresult = 0 ;
+  int arg1 ;
+  doubleArray *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = (int)jarg1; 
+  result = (doubleArray *)new_doubleArray(arg1);
+  *(doubleArray **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_io_tiledb_api_tiledbJNI_delete_1doubleArray(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  doubleArray *arg1 = (doubleArray *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(doubleArray **)&jarg1; 
+  delete_doubleArray(arg1);
+}
+
+
+SWIGEXPORT jdouble JNICALL Java_io_tiledb_api_tiledbJNI_doubleArray_1getitem(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  jdouble jresult = 0 ;
+  doubleArray *arg1 = (doubleArray *) 0 ;
+  int arg2 ;
+  double result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(doubleArray **)&jarg1; 
+  arg2 = (int)jarg2; 
+  result = (double)doubleArray_getitem(arg1,arg2);
+  jresult = (jdouble)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_io_tiledb_api_tiledbJNI_doubleArray_1setitem(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jdouble jarg3) {
+  doubleArray *arg1 = (doubleArray *) 0 ;
+  int arg2 ;
+  double arg3 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(doubleArray **)&jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (double)jarg3; 
+  doubleArray_setitem(arg1,arg2,arg3);
+}
+
+
+SWIGEXPORT jlong JNICALL Java_io_tiledb_api_tiledbJNI_doubleArray_1cast(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  doubleArray *arg1 = (doubleArray *) 0 ;
+  double *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(doubleArray **)&jarg1; 
+  result = (double *)doubleArray_cast(arg1);
+  *(double **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_io_tiledb_api_tiledbJNI_doubleArray_1frompointer(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  jlong jresult = 0 ;
+  double *arg1 = (double *) 0 ;
+  doubleArray *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(double **)&jarg1; 
+  result = (doubleArray *)doubleArray_frompointer(arg1);
+  *(doubleArray **)&jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT jlong JNICALL Java_io_tiledb_api_tiledbJNI_new_1charArray(JNIEnv *jenv, jclass jcls, jint jarg1) {
   jlong jresult = 0 ;
   int arg1 ;
@@ -1874,6 +2000,68 @@ SWIGEXPORT jint JNICALL Java_io_tiledb_api_tiledbJNI_intp_1value(JNIEnv *jenv, j
   arg1 = *(int **)&jarg1; 
   result = (int)intp_value(arg1);
   jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_io_tiledb_api_tiledbJNI_new_1floatp(JNIEnv *jenv, jclass jcls) {
+  jlong jresult = 0 ;
+  float *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (float *)new_floatp();
+  *(float **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_io_tiledb_api_tiledbJNI_copy_1floatp(JNIEnv *jenv, jclass jcls, jfloat jarg1) {
+  jlong jresult = 0 ;
+  float arg1 ;
+  float *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = (float)jarg1; 
+  result = (float *)copy_floatp(arg1);
+  *(float **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_io_tiledb_api_tiledbJNI_delete_1floatp(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  float *arg1 = (float *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(float **)&jarg1; 
+  delete_floatp(arg1);
+}
+
+
+SWIGEXPORT void JNICALL Java_io_tiledb_api_tiledbJNI_floatp_1assign(JNIEnv *jenv, jclass jcls, jlong jarg1, jfloat jarg2) {
+  float *arg1 = (float *) 0 ;
+  float arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(float **)&jarg1; 
+  arg2 = (float)jarg2; 
+  floatp_assign(arg1,arg2);
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_io_tiledb_api_tiledbJNI_floatp_1value(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  jfloat jresult = 0 ;
+  float *arg1 = (float *) 0 ;
+  float result;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(float **)&jarg1; 
+  result = (float)floatp_value(arg1);
+  jresult = (jfloat)result; 
   return jresult;
 }
 
@@ -5054,6 +5242,20 @@ SWIGEXPORT jint JNICALL Java_io_tiledb_api_tiledbJNI_tiledb_1array_1schema_1dump
   arg2 = *(tiledb_array_schema_t **)&jarg2; 
   result = (int)tiledb_array_schema_dump_stdout(arg1,(tiledb_array_schema_t const *)arg2);
   jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_io_tiledb_api_tiledbJNI_derefVoid(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  jlong jresult = 0 ;
+  void **arg1 = (void **) 0 ;
+  void *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(void ***)&jarg1; 
+  result = (void *)derefVoid(arg1);
+  *(void **)&jresult = result; 
   return jresult;
 }
 

@@ -101,6 +101,10 @@ TILEDB_EXPORT int tiledb_domain_dump_stdout(
       fflush(stdout);
       return ret;
     };
+    
+    TILEDB_EXPORT void * derefVoid(void** in){
+    	return *in;
+    }
 
 #undef TILEDB_EXPORT
 #ifdef __cplusplus

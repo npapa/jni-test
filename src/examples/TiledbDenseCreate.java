@@ -62,7 +62,7 @@ public class TiledbDenseCreate {
 				tiledb_datatype_t.TILEDB_INT32);
 		tiledb_attribute_t a1 = tiledb.tiledb_attribute_tpp_value(a1pp);
 		tiledb.tiledb_attribute_set_compressor(ctx, a1,
-				tiledb_compressor_t.TILEDB_GZIP, -1);
+				tiledb_compressor_t.TILEDB_BLOSC, -1);
 		tiledb.tiledb_attribute_set_cell_val_num(ctx, a1, 1);
 
 		SWIGTYPE_p_p_tiledb_attribute_t a2pp = tiledb
@@ -72,7 +72,7 @@ public class TiledbDenseCreate {
 		tiledb_attribute_t a2 = tiledb.tiledb_attribute_tpp_value(a2pp);
 		tiledb.tiledb_attribute_set_compressor(ctx, a2,
 				tiledb_compressor_t.TILEDB_GZIP, -1);
-		tiledb.tiledb_attribute_set_cell_val_num(ctx, a2, -1);
+		tiledb.tiledb_attribute_set_cell_val_num(ctx, a2, tiledb.tiledb_var_num());
 
 		SWIGTYPE_p_p_tiledb_attribute_t a3pp = tiledb
 				.new_tiledb_attribute_tpp();

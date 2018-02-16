@@ -74,7 +74,7 @@ public class TiledbSparseCreate {
 		tiledb_attribute_t a2 = tiledb.tiledb_attribute_tpp_value(a2pp);
 		tiledb.tiledb_attribute_set_compressor(ctx, a2,
 				tiledb_compressor_t.TILEDB_GZIP, -1);
-		tiledb.tiledb_attribute_set_cell_val_num(ctx, a2, -1);
+		tiledb.tiledb_attribute_set_cell_val_num(ctx, a2, tiledb.tiledb_var_num());
 
 		SWIGTYPE_p_p_tiledb_attribute_t a3pp = tiledb
 				.new_tiledb_attribute_tpp();

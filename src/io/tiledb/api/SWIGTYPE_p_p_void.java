@@ -11,7 +11,7 @@ package io.tiledb.api;
 public class SWIGTYPE_p_p_void {
   private transient long swigCPtr;
 
-  protected SWIGTYPE_p_p_void(long cPtr, @SuppressWarnings("unused") boolean futureUse) {
+  public SWIGTYPE_p_p_void(long cPtr, @SuppressWarnings("unused") boolean futureUse) {
     swigCPtr = cPtr;
   }
 
