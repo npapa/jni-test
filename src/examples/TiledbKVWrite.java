@@ -1,6 +1,7 @@
 package examples;
 
 //import io.tiledb.api.Domain;
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
 
 import io.tiledb.api.*;
@@ -13,7 +14,7 @@ public class TiledbKVWrite {
 		System.loadLibrary("tiledb");
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		// Create TileDB context
 		SWIGTYPE_p_p_tiledb_ctx_t ctxpp = tiledb.new_tiledb_ctx_tpp();
 		tiledb.tiledb_ctx_create(ctxpp, null);

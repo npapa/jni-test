@@ -88,9 +88,9 @@ public class TiledbKVRead {
 		System.out.printf("a1, a2, (a3.first, a3.second)\n");
 		System.out.printf("-----------------------------\n");
 		System.out.printf("%d", PointerUtils.intFromVoid(a1).getitem(0));
-		System.out.printf(", %s", ArrayUtils.substring(PointerUtils.charFromVoid(a2), 0, a2_size_));
-		System.out.printf(", (%f, %f)\n", PointerUtils.floatFromVoid(a3).getitem(0),
-				PointerUtils.floatFromVoid(a3).getitem(1));
+		System.out.printf(", %s", ArrayUtils.substring(PointerUtils.charArrayFromVoid(a2), 0, a2_size_));
+		System.out.printf(", (%f, %f)\n", PointerUtils.floatArrayFromVoid(a3).getitem(0),
+				PointerUtils.floatArrayFromVoid(a3).getitem(1));
 
 		// Clean up
 		tiledb.tiledb_kv_close(ctx, kv);

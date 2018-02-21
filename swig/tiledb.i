@@ -14,10 +14,18 @@
 
 %include carrays.i
 %array_class(int, intArray);
-%array_class(uint64_t, uint64_tArray);
+%array_class(int32_t, int32_tArray);
+%array_class(int64_t, int64_tArray);
+%array_class(char, charArray);
 %array_class(float, floatArray);
 %array_class(double, doubleArray);
-%array_class(char, charArray);
+%array_class(int8_t, int8_tArray);
+%array_class(uint8_t, uint8_tArray);
+%array_class(int16_t, int16_tArray);
+%array_class(uint16_t, uint16_tArray);
+%array_class(uint32_t, uint32_tArray);
+%array_class(uint64_t, uint64_tArray);
+
 %array_functions(char *, charpArray);
 %array_functions( void *, voidpArray )
 
