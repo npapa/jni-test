@@ -69,34 +69,36 @@ extern "C" {
 #endif
     
     
-TILEDB_EXPORT int tiledb_dimension_dump_stdout(
-    tiledb_ctx_t* ctx, const tiledb_dimension_t* dim){
+	TILEDB_EXPORT int tiledb_dimension_dump_stdout(
+    	tiledb_ctx_t* ctx, const tiledb_dimension_t* dim){
       int ret = tiledb_dimension_dump(ctx, dim, stdout);
       fflush(stdout);
       return ret;
     };
     
-TILEDB_EXPORT int tiledb_kv_schema_dump_stdout(
-    tiledb_ctx_t* ctx, const tiledb_kv_schema_t* kv_schema){
+	TILEDB_EXPORT int tiledb_kv_schema_dump_stdout(
+    	tiledb_ctx_t* ctx, const tiledb_kv_schema_t* kv_schema){
       int ret = tiledb_kv_schema_dump(ctx, kv_schema, stdout);
       fflush(stdout);
       return ret;
     };
-TILEDB_EXPORT int tiledb_attribute_dump_stdout(
-    tiledb_ctx_t* ctx, const tiledb_attribute_t* attr){
+    
+	TILEDB_EXPORT int tiledb_attribute_dump_stdout(
+    	tiledb_ctx_t* ctx, const tiledb_attribute_t* attr){
       int ret = tiledb_attribute_dump(ctx, attr, stdout);
       fflush(stdout);
       return ret;
     };
-TILEDB_EXPORT int tiledb_domain_dump_stdout(
-    tiledb_ctx_t* ctx, const tiledb_domain_t* domain){
+    
+	TILEDB_EXPORT int tiledb_domain_dump_stdout(
+    	tiledb_ctx_t* ctx, const tiledb_domain_t* domain){
       int ret = tiledb_domain_dump(ctx, domain, stdout);
       fflush(stdout);
       return ret;
     };
     
     TILEDB_EXPORT int tiledb_array_schema_dump_stdout(
-    tiledb_ctx_t* ctx, const tiledb_array_schema_t* array_schema){
+    	tiledb_ctx_t* ctx, const tiledb_array_schema_t* array_schema){
       int ret = tiledb_array_schema_dump(ctx, array_schema, stdout);
       fflush(stdout);
       return ret;
@@ -104,7 +106,8 @@ TILEDB_EXPORT int tiledb_domain_dump_stdout(
     
     TILEDB_EXPORT void * derefVoid(void** in){
     	return *in;
-    }
+    };
+    
 
 #undef TILEDB_EXPORT
 #ifdef __cplusplus

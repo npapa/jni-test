@@ -4,7 +4,6 @@ package examples;
 import java.math.BigInteger;
 
 import io.tiledb.api.*;
-import io.tiledb.custom.ArrayUtils;
 import io.tiledb.custom.Version;
 
 public class TiledbKVRead {

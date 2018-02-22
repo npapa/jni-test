@@ -1,12 +1,14 @@
 package io.tiledb.custom;
 
+import io.tiledb.api.customJNI;
+
 public class Version {
 	public int major;
 	public int minor;
 	public int rev;
 	
 	public Version() {
-		tiledbJNI.version(this);
+		customJNI.version(this);
 	}
 	
 	@Override

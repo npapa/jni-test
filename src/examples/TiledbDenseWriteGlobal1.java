@@ -2,7 +2,6 @@ package examples;
 
 //import io.tiledb.api.Domain;
 import io.tiledb.api.*;
-import io.tiledb.custom.ArrayUtils;
 import io.tiledb.custom.Version;
 
 public class TiledbDenseWriteGlobal1 {
@@ -24,7 +23,7 @@ public class TiledbDenseWriteGlobal1 {
 		long[] buffer_a2 = { 0, 1, 3, 6, 10, 11, 13, 16, 20, 21, 23, 26, 30,
 				31, 33, 36 };
 		uint64_tArray a2 = ArrayUtils.newUint64Array(buffer_a2);
-		String buffer_var_a2 = "abbcccdddd" + "effggghhhh" + "ijjkkkllll"
+		String buffer_var_a2 = "aβcccdddd" + "effggghhhh" + "ijjkkkllll"
 				+ "mnnooopppp";
 		charArray var_a2 = ArrayUtils.newCharArray(buffer_var_a2);
 

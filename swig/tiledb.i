@@ -85,9 +85,12 @@
 %include "enums.swg"
 %javaconst(1);
     
-
-%include "tiledb_old.h"
 %include "tiledb.h"
+
+
+
+    
+%include "tiledb_old.h"
 
 
 

@@ -1,15 +1,13 @@
-package io.tiledb.custom;
+package io.tiledb.api;
 
 import java.math.BigInteger;
 
 import io.tiledb.api.*;
+import io.tiledb.custom.tiledbJNI;
 
 public class ArrayUtils {
 	public static intArray newIntArray(int[] array){
-		intArray ret = new intArray(array.length);
-		for (int i = 0; i < array.length; i++) {
-			ret.setitem(i, array[i]);
-		}
+		intArray ret = new intArray(tiledbJNI.newIntArray(array, array.length), true);
 		return ret;
 	}
 
@@ -40,13 +38,6 @@ public class ArrayUtils {
 		return ret;
 	}
 	
-	public static String substring(charArray array, int start, int size){
-		char[] c = new char[size];
-		for (int i = start; i < start+size; i++) {
-			c[i-start]=array.getitem(i);
-		}
-		return new String(c);
-	}
 
 	public static doubleArray newDoubleArray(double[] array) {
 		doubleArray ret = new doubleArray(array.length);
@@ -56,4 +47,12 @@ public class ArrayUtils {
 		return ret;
 	}
 	
+
+	public static String substring(charArray array, int start, int size){
+		char[] c = new char[size];
+		for (int i = start; i < start+size; i++) {
+			c[i-start]=array.getitem(i);
+		}
+		return new String(c);
+	}
 }

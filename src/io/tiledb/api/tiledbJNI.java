@@ -319,12 +319,6 @@ public class tiledbJNI {
   public final static native void delete_tiledb_vfs_mode_tp(long jarg1);
   public final static native void tiledb_vfs_mode_tp_assign(long jarg1, int jarg2);
   public final static native int tiledb_vfs_mode_tp_value(long jarg1);
-  public final static native int tiledb_dimension_dump_stdout(long jarg1, tiledb_ctx_t jarg1_, long jarg2, tiledb_dimension_t jarg2_);
-  public final static native int tiledb_kv_schema_dump_stdout(long jarg1, tiledb_ctx_t jarg1_, long jarg2, tiledb_kv_schema_t jarg2_);
-  public final static native int tiledb_attribute_dump_stdout(long jarg1, tiledb_ctx_t jarg1_, long jarg2, tiledb_attribute_t jarg2_);
-  public final static native int tiledb_domain_dump_stdout(long jarg1, tiledb_ctx_t jarg1_, long jarg2, tiledb_domain_t jarg2_);
-  public final static native int tiledb_array_schema_dump_stdout(long jarg1, tiledb_ctx_t jarg1_, long jarg2, tiledb_array_schema_t jarg2_);
-  public final static native long derefVoid(long jarg1);
   public final static native String tiledb_coords();
   public final static native long tiledb_var_num();
   public final static native long tiledb_max_path();
@@ -542,4 +536,10 @@ public class tiledbJNI {
   public final static native int tiledb_vfs_fh_is_closed(long jarg1, tiledb_ctx_t jarg1_, long jarg2, tiledb_vfs_fh_t jarg2_, long jarg3);
   public final static native int tiledb_vfs_touch(long jarg1, tiledb_ctx_t jarg1_, long jarg2, tiledb_vfs_t jarg2_, String jarg3);
   public final static native int tiledb_uri_to_path(long jarg1, tiledb_ctx_t jarg1_, String jarg2, String jarg3, long jarg4);
+  public final static native int tiledb_dimension_dump_stdout(long jarg1, tiledb_ctx_t jarg1_, long jarg2, tiledb_dimension_t jarg2_);
+  public final static native int tiledb_kv_schema_dump_stdout(long jarg1, tiledb_ctx_t jarg1_, long jarg2, tiledb_kv_schema_t jarg2_);
+  public final static native int tiledb_attribute_dump_stdout(long jarg1, tiledb_ctx_t jarg1_, long jarg2, tiledb_attribute_t jarg2_);
+  public final static native int tiledb_domain_dump_stdout(long jarg1, tiledb_ctx_t jarg1_, long jarg2, tiledb_domain_t jarg2_);
+  public final static native int tiledb_array_schema_dump_stdout(long jarg1, tiledb_ctx_t jarg1_, long jarg2, tiledb_array_schema_t jarg2_);
+  public final static native long derefVoid(long jarg1);
 }
