@@ -45,13 +45,13 @@ public enum tiledb_compressor_t {
   @SuppressWarnings("unused")
   private tiledb_compressor_t(int swigValue) {
     this.swigValue = swigValue;
-    SwigNext.next = swigValue+1;
+    SwigNext.next = swigValue + 1;
   }
 
   @SuppressWarnings("unused")
   private tiledb_compressor_t(tiledb_compressor_t swigEnum) {
     this.swigValue = swigEnum.swigValue;
-    SwigNext.next = this.swigValue+1;
+    SwigNext.next = this.swigValue + 1;
   }
 
   private final int swigValue;

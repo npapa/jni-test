@@ -1,20 +1,21 @@
 package examples;
 
 //import io.tiledb.api.Domain;
+
 import io.tiledb.api.*;
 import io.tiledb.custom.Version;
 
 public class TiledbGroupCreate {
 
-	static {
-		System.loadLibrary("tiledb");
-	}
+  static {
+    System.loadLibrary("tiledb");
+  }
 
-	public static void main(String[] args) {
-		// Create TileDB context
-		SWIGTYPE_p_p_tiledb_ctx_t ctxpp = tiledb.new_tiledb_ctx_tpp();
-		tiledb.tiledb_ctx_create(ctxpp, null);
-		tiledb_ctx_t ctx = tiledb.tiledb_ctx_tpp_value(ctxpp);
+  public static void main(String[] args) {
+    // Create TileDB context
+    SWIGTYPE_p_p_tiledb_ctx_t ctxpp = tiledb.new_tiledb_ctx_tpp();
+    tiledb.tiledb_ctx_create(ctxpp, null);
+    tiledb_ctx_t ctx = tiledb.tiledb_ctx_tpp_value(ctxpp);
 //
 //
 //		  // List children
@@ -32,8 +33,8 @@ public class TiledbGroupCreate {
 //		  tiledb_ctx_free(ctx);
 
 
-		// Clean up
-		tiledb.tiledb_ctx_free(ctx);
-	}
+    // Clean up
+    tiledb.tiledb_ctx_free(ctx);
+  }
 
 }
