@@ -34,13 +34,13 @@ public enum tiledb_array_type_t {
   @SuppressWarnings("unused")
   private tiledb_array_type_t(int swigValue) {
     this.swigValue = swigValue;
-    SwigNext.next = swigValue + 1;
+    SwigNext.next = swigValue+1;
   }
 
   @SuppressWarnings("unused")
   private tiledb_array_type_t(tiledb_array_type_t swigEnum) {
     this.swigValue = swigEnum.swigValue;
-    SwigNext.next = this.swigValue + 1;
+    SwigNext.next = this.swigValue+1;
   }
 
   private final int swigValue;

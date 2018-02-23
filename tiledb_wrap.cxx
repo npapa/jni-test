@@ -233,7 +233,7 @@ static void SWIGUNUSED SWIG_JavaThrowException(JNIEnv *jenv, SWIG_JavaExceptionC
 #include <string>
 #include <vector>
 #include "tiledb.h"
-#include "tiledb_old.h"
+#include "tiledb_java_extensions.h"
 
 
 #include <stdint.h>		// Use the C99 official header
@@ -10272,6 +10272,28 @@ SWIGEXPORT jlong JNICALL Java_io_tiledb_api_tiledbJNI_derefVoid(JNIEnv *jenv, jc
   arg1 = *(void ***)&jarg1; 
   result = (void *)derefVoid(arg1);
   *(void **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_io_tiledb_api_tiledbJNI_print_1upon_1completion(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  void *arg1 = (void *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(void **)&jarg1; 
+  print_upon_completion(arg1);
+}
+
+
+SWIGEXPORT jlong JNICALL Java_io_tiledb_api_tiledbJNI_native_1callback(JNIEnv *jenv, jclass jcls) {
+  jlong jresult = 0 ;
+  void (*result)(void *) = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (void (*)(void *))native_callback();
+  *(void (**)(void *))&jresult = result; 
   return jresult;
 }
 

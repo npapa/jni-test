@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 #include "tiledb.h"
-#include "tiledb_old.h"
+#include "tiledb_java_extensions.h"
 %}
 
 
@@ -87,10 +87,7 @@
     
 %include "tiledb.h"
 
-
-
-    
-%include "tiledb_old.h"
+%include "tiledb_java_extensions.h"
 
 
 

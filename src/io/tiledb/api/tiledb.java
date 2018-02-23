@@ -1669,4 +1669,13 @@ public class tiledb implements tiledbConstants {
     return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
   }
 
+  public static void print_upon_completion(SWIGTYPE_p_void s) {
+    tiledbJNI.print_upon_completion(SWIGTYPE_p_void.getCPtr(s));
+  }
+
+  public static SWIGTYPE_p_f_p_void__void native_callback() {
+    long cPtr = tiledbJNI.native_callback();
+    return (cPtr == 0) ? null : new SWIGTYPE_p_f_p_void__void(cPtr, false);
+  }
+
 }

@@ -34,13 +34,13 @@ public enum tiledb_filesystem_t {
   @SuppressWarnings("unused")
   private tiledb_filesystem_t(int swigValue) {
     this.swigValue = swigValue;
-    SwigNext.next = swigValue + 1;
+    SwigNext.next = swigValue+1;
   }
 
   @SuppressWarnings("unused")
   private tiledb_filesystem_t(tiledb_filesystem_t swigEnum) {
     this.swigValue = swigEnum.swigValue;
-    SwigNext.next = this.swigValue + 1;
+    SwigNext.next = this.swigValue+1;
   }
 
   private final int swigValue;

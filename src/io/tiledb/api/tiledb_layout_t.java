@@ -36,13 +36,13 @@ public enum tiledb_layout_t {
   @SuppressWarnings("unused")
   private tiledb_layout_t(int swigValue) {
     this.swigValue = swigValue;
-    SwigNext.next = swigValue + 1;
+    SwigNext.next = swigValue+1;
   }
 
   @SuppressWarnings("unused")
   private tiledb_layout_t(tiledb_layout_t swigEnum) {
     this.swigValue = swigEnum.swigValue;
-    SwigNext.next = this.swigValue + 1;
+    SwigNext.next = this.swigValue+1;
   }
 
   private final int swigValue;

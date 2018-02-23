@@ -107,7 +107,15 @@ extern "C" {
     TILEDB_EXPORT void * derefVoid(void** in){
     	return *in;
     };
-    
+
+    // Simply prints the input string to stdout
+    TILEDB_EXPORT void print_upon_completion(void* s) {
+      printf("%s\n", (char*)s);
+    }
+
+    TILEDB_EXPORT void (*native_callback())(void*){
+        return print_upon_completion;
+    }
 
 #undef TILEDB_EXPORT
 #ifdef __cplusplus

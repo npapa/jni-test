@@ -3,9 +3,8 @@ package examples;
 //import io.tiledb.api.Domain;
 
 import io.tiledb.api.*;
-import io.tiledb.custom.Version;
 
-public class TiledbDenseReadGlobal {
+public class TiledbDenseReadAsync {
 
   static {
     System.loadLibrary("tiledb");
@@ -79,7 +78,17 @@ public class TiledbDenseReadGlobal {
         tiledb_layout_t.TILEDB_GLOBAL_ORDER);
 
     // Submit query
-    tiledb.tiledb_query_submit(ctx, query);
+    String s_ = "Callback: Query completed";
+    charArray s = ArrayUtils.newCharArray(s_);
+    tiledb.tiledb_query_submit_async(ctx, query, tiledb.native_callback(), PointerUtils.toVoid(s));
+
+    // Wait for query to complete
+    System.out.printf("Query in progress\n");
+    SWIGTYPE_p_tiledb_query_status_t status = tiledb.new_tiledb_query_status_tp();
+    do {
+      tiledb.tiledb_query_get_status(ctx, query, status);
+    } while (tiledb.tiledb_query_status_tp_value(status) != tiledb_query_status_t.TILEDB_COMPLETED);
+
 
 
     a1_size = buffer_sizes.getitem(0).intValue() / ArrayUtilsJNI.sizeOfInt32();

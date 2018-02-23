@@ -3,15 +3,14 @@ package examples;
 //import io.tiledb.api.Domain;
 
 import io.tiledb.api.*;
-import io.tiledb.custom.Version;
 
-public class TiledbDenseWriteGlobal1 {
+public class TiledbDenseWriteAsync {
 
   static {
     System.loadLibrary("tiledb");
   }
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws InterruptedException {
     // Create TileDB context
     SWIGTYPE_p_p_tiledb_ctx_t ctxpp = tiledb.new_tiledb_ctx_tpp();
     tiledb.tiledb_ctx_create(ctxpp, null);
@@ -24,7 +23,7 @@ public class TiledbDenseWriteGlobal1 {
     long[] buffer_a2 = {0, 1, 3, 6, 10, 11, 13, 16, 20, 21, 23, 26, 30,
         31, 33, 36};
     uint64_tArray a2 = ArrayUtils.newUint64Array(buffer_a2);
-    String buffer_var_a2 = "aβcccdddd" + "effggghhhh" + "ijjkkkllll"
+    String buffer_var_a2 = "abbcccdddd" + "effggghhhh" + "ijjkkkllll"
         + "mnnooopppp";
     charArray var_a2 = ArrayUtils.newCharArray(buffer_var_a2);
 
@@ -62,7 +61,18 @@ public class TiledbDenseWriteGlobal1 {
         buffer_sizes.cast());
 
     // Submit query
-    tiledb.tiledb_query_submit(ctx, query);
+    String s_ = "Callback: Query completed";
+    charArray s = ArrayUtils.newCharArray(s_);
+    tiledb.tiledb_query_submit_async(ctx, query, tiledb.native_callback(), PointerUtils.toVoid(s));
+
+    // Wait for query to complete
+    System.out.printf("Query in progress\n");
+    SWIGTYPE_p_tiledb_query_status_t status = tiledb.new_tiledb_query_status_tp();
+    do {
+      tiledb.tiledb_query_get_status(ctx, query, status);
+      Thread.sleep(10);
+    } while (tiledb.tiledb_query_status_tp_value(status) != tiledb_query_status_t.TILEDB_COMPLETED);
+
 
     // Clean up
     tiledb.tiledb_query_free(ctx, query);
