@@ -59,7 +59,7 @@ public class TiledbDenseCreate {
     SWIGTYPE_p_p_tiledb_attribute_t a1pp = tiledb
         .new_tiledb_attribute_tpp();
     tiledb.tiledb_attribute_create(ctx, a1pp, "a1",
-        tiledb_datatype_t.TILEDB_INT8);
+        tiledb_datatype_t.TILEDB_INT32);
     tiledb_attribute_t a1 = tiledb.tiledb_attribute_tpp_value(a1pp);
     tiledb.tiledb_attribute_set_compressor(ctx, a1,
         tiledb_compressor_t.TILEDB_BLOSC, -1);

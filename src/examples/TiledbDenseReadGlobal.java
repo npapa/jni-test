@@ -50,11 +50,11 @@ public class TiledbDenseReadGlobal {
     System.out.println("a3: " + buffer_sizes.getitem(3));
 
     // Prepare cell buffers
-    int a1_size = buffer_sizes.getitem(0).intValue() / ArrayUtilsJNI.sizeOfInt8();
+    int a1_size = buffer_sizes.getitem(0).intValue() / ArrayUtilsJNI.sizeOfInt32();
     int a2_size = buffer_sizes.getitem(1).intValue() /ArrayUtilsJNI.sizeOfUint64();
-    int a2_var_size = buffer_sizes.getitem(2).intValue() /ArrayUtilsJNI.sizeOfInt8();
+    int a2_var_size = buffer_sizes.getitem(2).intValue() / ArrayUtilsJNI.sizeOfInt8();
     int a3_size = buffer_sizes.getitem(3).intValue() /ArrayUtilsJNI.sizeOfFloat();
-    int8_tArray buffer_a1 = new int8_tArray(a1_size);
+    int32_tArray buffer_a1 = new int32_tArray(a1_size);
     uint64_tArray buffer_a2 = new uint64_tArray(a2_size);
     int8_tArray buffer_var_a2 = new int8_tArray(a2_var_size);
     floatArray buffer_a3 = new floatArray(a3_size);
@@ -80,12 +80,25 @@ public class TiledbDenseReadGlobal {
     tiledb.tiledb_query_submit(ctx, query);
 
     // Print cell values (assumes all attributes are read)
-    byte[] a1 = ArrayUtils.int8ArrayGet(buffer_a1,buffer_sizes.getitem(0).intValue() /ArrayUtils.sizeOfType(buffer_a1));
-    long[] a2 = ArrayUtils.uint64ArrayGet(buffer_a2,buffer_sizes.getitem(1).intValue() /ArrayUtils.sizeOfType(buffer_a2));
-    byte[] a2_var = ArrayUtils.int8ArrayGet(buffer_var_a2, buffer_sizes.getitem(2).intValue() /ArrayUtils.sizeOfType(buffer_var_a2));
-    float[] a3 = ArrayUtils.floatArrayGet(buffer_a3,buffer_sizes.getitem(3).intValue() /ArrayUtils.sizeOfType(buffer_a3));
+    int[] a1 = ArrayUtils.int32ArrayGet(buffer_a1,a1_size);
+    long[] a2 = ArrayUtils.uint64ArrayGet(buffer_a2,a2_size);
+    byte[] a2_var = ArrayUtils.int8ArrayGet(buffer_var_a2, a2_var_size);
+    float[] a3 = ArrayUtils.floatArrayGet(buffer_a3,a3_size);
 
+    System.out.println(a2_var_size);
     int result_num = a1_size;
+    for (int i = 0; i < a1_size; ++i)
+      System.out.print(a1[i]+",");
+    System.out.println();
+    for (int i = 0; i < a2_size; ++i)
+      System.out.print(a2[i]+",");
+    System.out.println();
+    for (int i = 0; i < a2_var_size; ++i)
+      System.out.print((char)a2_var[i]+",");
+    System.out.println();
+    for (int i = 0; i < a3_size; ++i)
+      System.out.print(a3[i]+",");
+    System.out.println();
     System.out.println("Result num: " + result_num);
     System.out.println("a1, a2, a3[0], a3[1]");
     System.out.println("-----------------------------------------");

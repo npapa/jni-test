@@ -18,13 +18,13 @@ public class TiledbDenseWriteGlobal1 {
     tiledb_ctx_t ctx = tiledb.tiledb_ctx_tpp_value(ctxpp);
 
     // Prepare cell buffers
-    byte[] buffer_a1 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+    int[] buffer_a1 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
         15};
-    int8_tArray a1 = ArrayUtils.newInt8_tArray(buffer_a1);
+    intArray a1 = ArrayUtils.newIntArray(buffer_a1);
     long[] buffer_a2 = {0, 1, 3, 6, 10, 11, 13, 16, 20, 21, 23, 26, 30,
         31, 33, 36};
     uint64_tArray a2 = ArrayUtils.newUint64Array(buffer_a2);
-    String buffer_var_a2 = "aβcccdddd" + "effggghhhh" + "ijjkkkllll"
+    String buffer_var_a2 = "abbcccdddd" + "effggghhhh" + "ijjkkkllll"
         + "mnnooopppp";
     charArray var_a2 = ArrayUtils.newCharArray(buffer_var_a2);
 
@@ -39,10 +39,10 @@ public class TiledbDenseWriteGlobal1 {
     tiledb.voidpArray_setitem(buffers, 1, PointerUtils.toVoid(a2));
     tiledb.voidpArray_setitem(buffers, 2, PointerUtils.toVoid(var_a2));
     tiledb.voidpArray_setitem(buffers, 3, PointerUtils.toVoid(a3));
-    long buffer_sizes_[] = {buffer_a1.length * ArrayUtils.sizeOfType(buffer_a1),
-        buffer_a2.length * ArrayUtils.sizeOfType(buffer_a2),
-        buffer_var_a2.length() * ArrayUtils.sizeOfType(buffer_var_a2),
-        buffer_a3.length * ArrayUtils.sizeOfType(buffer_a3)};
+    long buffer_sizes_[] = {buffer_a1.length * ArrayUtils.sizeOfType(a1),
+        buffer_a2.length * ArrayUtils.sizeOfType(a2),
+        buffer_var_a2.length() * ArrayUtils.sizeOfType(var_a2),
+        buffer_a3.length * ArrayUtils.sizeOfType(a3)};
     uint64_tArray buffer_sizes = ArrayUtils.newUint64Array(buffer_sizes_);
 
     // Create query
