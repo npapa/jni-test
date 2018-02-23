@@ -10286,6 +10286,29 @@ SWIGEXPORT void JNICALL Java_io_tiledb_api_tiledbJNI_print_1upon_1completion(JNI
 }
 
 
+SWIGEXPORT jint JNICALL Java_io_tiledb_api_tiledbJNI_print_1path(JNIEnv *jenv, jclass jcls, jstring jarg1, jint jarg2, jlong jarg3) {
+  jint jresult = 0 ;
+  char *arg1 = (char *) 0 ;
+  tiledb_object_t arg2 ;
+  void *arg3 = (void *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = 0;
+  if (jarg1) {
+    arg1 = (char *)jenv->GetStringUTFChars(jarg1, 0);
+    if (!arg1) return 0;
+  }
+  arg2 = (tiledb_object_t)jarg2; 
+  arg3 = *(void **)&jarg3; 
+  result = (int)print_path((char const *)arg1,arg2,arg3);
+  jresult = (jint)result; 
+  if (arg1) jenv->ReleaseStringUTFChars(jarg1, (const char *)arg1);
+  return jresult;
+}
+
+
 SWIGEXPORT jlong JNICALL Java_io_tiledb_api_tiledbJNI_native_1callback(JNIEnv *jenv, jclass jcls) {
   jlong jresult = 0 ;
   void (*result)(void *) = 0 ;
@@ -10294,6 +10317,18 @@ SWIGEXPORT jlong JNICALL Java_io_tiledb_api_tiledbJNI_native_1callback(JNIEnv *j
   (void)jcls;
   result = (void (*)(void *))native_callback();
   *(void (**)(void *))&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_io_tiledb_api_tiledbJNI_native_1walk_1callback(JNIEnv *jenv, jclass jcls) {
+  jlong jresult = 0 ;
+  int (*result)(char const *,tiledb_object_t,void *) = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (int (*)(char const *,tiledb_object_t,void *))native_walk_callback();
+  *(int (**)(char const *,tiledb_object_t,void *))&jresult = result; 
   return jresult;
 }
 

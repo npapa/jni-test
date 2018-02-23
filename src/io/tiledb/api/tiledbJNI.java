@@ -543,5 +543,7 @@ public class tiledbJNI {
   public final static native int tiledb_array_schema_dump_stdout(long jarg1, tiledb_ctx_t jarg1_, long jarg2, tiledb_array_schema_t jarg2_);
   public final static native long derefVoid(long jarg1);
   public final static native void print_upon_completion(long jarg1);
+  public final static native int print_path(String jarg1, int jarg2, long jarg3);
   public final static native long native_callback();
+  public final static native long native_walk_callback();
 }

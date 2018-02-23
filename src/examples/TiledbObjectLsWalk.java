@@ -17,12 +17,15 @@ public class TiledbObjectLsWalk {
     tiledb.tiledb_ctx_create(ctxpp, null);
     tiledb_ctx_t ctx = tiledb.tiledb_ctx_tpp_value(ctxpp);
 
-    // Create a group
-    tiledb.tiledb_group_create(ctx, "my_group");
+    // List children
+    System.out.printf("List children:\n");
+    tiledb.tiledb_ls(ctx, "my_group", tiledb.native_walk_callback(), null);
 
-    // Create two groups inside the first group
-    tiledb.tiledb_group_create(ctx, "my_group/dense_arrays");
-    tiledb.tiledb_group_create(ctx, "my_group/sparse_arrays");
+    // Walk in a path with a pre- and post-order traversal
+    System.out.printf("\nPreorder traversal:\n");
+    tiledb.tiledb_object_walk(ctx, "my_group", tiledb_walk_order_t.TILEDB_PREORDER, tiledb.native_walk_callback(), null);
+    System.out.printf("\nPostorder traversal:\n");
+    tiledb.tiledb_object_walk(ctx, "my_group", tiledb_walk_order_t.TILEDB_POSTORDER, tiledb.native_walk_callback(), null);
 
     // Clean up
     tiledb.tiledb_ctx_free(ctx);

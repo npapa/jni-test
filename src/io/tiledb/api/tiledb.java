@@ -1673,9 +1673,18 @@ public class tiledb implements tiledbConstants {
     tiledbJNI.print_upon_completion(SWIGTYPE_p_void.getCPtr(s));
   }
 
+  public static int print_path(String path, tiledb_object_t type, SWIGTYPE_p_void data) {
+    return tiledbJNI.print_path(path, type.swigValue(), SWIGTYPE_p_void.getCPtr(data));
+  }
+
   public static SWIGTYPE_p_f_p_void__void native_callback() {
     long cPtr = tiledbJNI.native_callback();
     return (cPtr == 0) ? null : new SWIGTYPE_p_f_p_void__void(cPtr, false);
+  }
+
+  public static SWIGTYPE_p_f_p_q_const__char_enum_tiledb_object_t_p_void__int native_walk_callback() {
+    long cPtr = tiledbJNI.native_walk_callback();
+    return (cPtr == 0) ? null : new SWIGTYPE_p_f_p_q_const__char_enum_tiledb_object_t_p_void__int(cPtr, false);
   }
 
 }

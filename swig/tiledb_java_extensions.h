@@ -108,13 +108,42 @@ extern "C" {
     	return *in;
     };
 
-    // Simply prints the input string to stdout
+
     TILEDB_EXPORT void print_upon_completion(void* s) {
       printf("%s\n", (char*)s);
+      fflush(stdout);
+    }
+
+    TILEDB_EXPORT int print_path(const char* path, tiledb_object_t type, void* data) {
+      // Simply print the path and type
+      (void)data;
+      printf("%s ", path);
+      switch (type) {
+        case TILEDB_ARRAY:
+          printf("ARRAY");
+          break;
+        case TILEDB_KEY_VALUE:
+          printf("KEY_VALUE");
+          break;
+        case TILEDB_GROUP:
+          printf("GROUP");
+          break;
+        default:
+          printf("INVALID");
+      }
+      printf("\n");
+      fflush(stdout);
+
+      // Always iterate till the end
+      return 1;
     }
 
     TILEDB_EXPORT void (*native_callback())(void*){
         return print_upon_completion;
+    }
+
+    TILEDB_EXPORT int (*native_walk_callback())(const char*, tiledb_object_t, void *){
+        return print_path;
     }
 
 #undef TILEDB_EXPORT
