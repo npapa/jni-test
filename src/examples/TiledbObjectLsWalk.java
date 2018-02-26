@@ -23,12 +23,42 @@ public class TiledbObjectLsWalk {
 
     // Walk in a path with a pre- and post-order traversal
     System.out.printf("\nPreorder traversal:\n");
-    tiledb.tiledb_object_walk(ctx, "my_group", tiledb_walk_order_t.TILEDB_PREORDER, tiledb.native_walk_callback(), null);
+    tiledb.tiledb_object_walk_jc(ctx, "my_group", tiledb_walk_order_t.TILEDB_PREORDER, tiledb.java_path_callback(), new ReadCallback(""));
     System.out.printf("\nPostorder traversal:\n");
-    tiledb.tiledb_object_walk(ctx, "my_group", tiledb_walk_order_t.TILEDB_POSTORDER, tiledb.native_walk_callback(), null);
+    tiledb.tiledb_object_walk_jc(ctx, "my_group", tiledb_walk_order_t.TILEDB_POSTORDER, tiledb.java_path_callback(), new ReadCallback(""));
 
     // Clean up
     tiledb.tiledb_ctx_free(ctx);
   }
 
+  private static class ReadCallback extends CallbackPath {
+
+    private final String data;
+
+    public ReadCallback(String data){
+      this.data = data;
+    }
+
+    @Override
+    public int call(String path, tiledb_object_t type) {
+      System.out.printf("Wowwww %s ", path);
+      switch (type) {
+        case TILEDB_ARRAY:
+          System.out.printf("ARRAY");
+          break;
+        case TILEDB_KEY_VALUE:
+          System.out.printf("KEY_VALUE");
+          break;
+        case TILEDB_GROUP:
+          System.out.printf("GROUP");
+          break;
+        default:
+          System.out.printf("INVALID");
+      }
+      System.out.printf("\n");
+
+      // Always iterate till the end
+      return 1;
+    }
+  }
 }

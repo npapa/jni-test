@@ -546,4 +546,8 @@ public class tiledbJNI {
   public final static native int print_path(String jarg1, int jarg2, long jarg3);
   public final static native long native_callback();
   public final static native long native_walk_callback();
+  public final static native int tiledb_query_submit_async_jc(long jarg1, tiledb_ctx_t jarg1_, long jarg2, tiledb_query_t jarg2_, long jarg3, Object jarg4);
+  public final static native long java_callback();
+  public final static native int tiledb_object_walk_jc(long jarg1, tiledb_ctx_t jarg1_, String jarg2, int jarg3, long jarg4, Object jarg5);
+  public final static native long java_path_callback();
 }

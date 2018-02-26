@@ -78,9 +78,10 @@ public class TiledbDenseReadAsync {
         tiledb_layout_t.TILEDB_GLOBAL_ORDER);
 
     // Submit query
-    String s_ = "Callback: Query completed";
-    charArray s = ArrayUtils.newCharArray(s_);
-    tiledb.tiledb_query_submit_async(ctx, query, tiledb.native_callback(), PointerUtils.toVoid(s));
+//    String s_ = "Callback: Query completed";
+//    charArray s = ArrayUtils.newCharArray(s_);
+
+    tiledb.tiledb_query_submit_async_jc(ctx, query, tiledb.java_callback(), new ReadCallback("Callback: Query completed"));
 
     // Wait for query to complete
     System.out.printf("Query in progress\n");
@@ -121,5 +122,19 @@ public class TiledbDenseReadAsync {
     tiledb.tiledb_query_free(ctx, query);
     tiledb.tiledb_ctx_free(ctx);
 
+  }
+
+  private static class ReadCallback implements Callback {
+
+    private final String data;
+
+    public ReadCallback(String data){
+      this.data = data;
+    }
+
+    @Override
+    public void call() {
+      System.out.println(data);
+    }
   }
 }
