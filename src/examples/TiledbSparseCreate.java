@@ -5,7 +5,6 @@ package examples;
 import java.math.BigInteger;
 
 import io.tiledb.api.*;
-import io.tiledb.custom.Version;
 
 public class TiledbSparseCreate {
 
@@ -25,9 +24,9 @@ public class TiledbSparseCreate {
 
     // Create dimensions
     long[] d1_domain_ = {1, 4};
-    uint64_tArray d1_domain = ArrayUtils.newUint64Array(d1_domain_);
+    uint64_tArray d1_domain = Utils.newUint64Array(d1_domain_);
     long[] d1_tile_extents_ = {2};
-    uint64_tArray d1_tile_extents = ArrayUtils
+    uint64_tArray d1_tile_extents = Utils
         .newUint64Array(d1_tile_extents_);
     SWIGTYPE_p_p_tiledb_dimension_t d1pp = tiledb
         .new_tiledb_dimension_tpp();
@@ -38,9 +37,9 @@ public class TiledbSparseCreate {
     tiledb_dimension_t d1 = tiledb.tiledb_dimension_tpp_value(d1pp);
 
     long[] d2_domain_ = {1, 4};
-    uint64_tArray d2_domain = ArrayUtils.newUint64Array(d2_domain_);
+    uint64_tArray d2_domain = Utils.newUint64Array(d2_domain_);
     long[] d2_tile_extents_ = {2};
-    uint64_tArray d2_tile_extents = ArrayUtils
+    uint64_tArray d2_tile_extents = Utils
         .newUint64Array(d2_tile_extents_);
     SWIGTYPE_p_p_tiledb_dimension_t d2pp = tiledb
         .new_tiledb_dimension_tpp();

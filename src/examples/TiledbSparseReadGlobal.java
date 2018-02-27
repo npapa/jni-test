@@ -3,7 +3,6 @@ package examples;
 //import io.tiledb.api.Domain;
 
 import io.tiledb.api.*;
-import io.tiledb.custom.Version;
 
 public class TiledbSparseReadGlobal {
 
@@ -44,7 +43,7 @@ public class TiledbSparseReadGlobal {
     tiledb.charpArray_setitem(attributes, 3, tiledb.tiledb_coords());
     uint64_tArray buffer_sizes = new uint64_tArray(5);
     long[] subarray_ = {1, 4, 1, 4};
-    uint64_tArray subarray = ArrayUtils.newUint64Array(subarray_);
+    uint64_tArray subarray = Utils.newUint64Array(subarray_);
     tiledb.tiledb_array_compute_max_read_buffer_sizes(ctx,
         "my_sparse_array", PointerUtils.toVoid(subarray), attributes,
         4, buffer_sizes.cast());
@@ -104,7 +103,7 @@ public class TiledbSparseReadGlobal {
           .intValue() - buffer_a2.getitem(i).intValue()
           : buffer_sizes.getitem(2).intValue()
           - buffer_a2.getitem(i).intValue();
-      System.out.printf("%10s", ArrayUtils.substring(buffer_var_a2, buffer_a2
+      System.out.printf("%10s", Utils.substring(buffer_var_a2, buffer_a2
           .getitem(i).intValue(), var_size));
       System.out.printf("%10.1f%10.1f\n", buffer_a3.getitem(2 * i),
           buffer_a3.getitem(2 * i + 1));

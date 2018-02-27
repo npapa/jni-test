@@ -5,7 +5,6 @@ package examples;
 import java.math.BigInteger;
 
 import io.tiledb.api.*;
-import io.tiledb.custom.Version;
 
 public class TiledbArraySchema {
 
@@ -50,9 +49,9 @@ public class TiledbArraySchema {
     // Create dimensions
 
     long[] d1_domain_ = {1, 1000};
-    uint64_tArray d1_domain = ArrayUtils.newUint64Array(d1_domain_);
+    uint64_tArray d1_domain = Utils.newUint64Array(d1_domain_);
     long[] d1_extents_ = {10};
-    uint64_tArray d1_extent = ArrayUtils.newUint64Array(d1_extents_);
+    uint64_tArray d1_extent = Utils.newUint64Array(d1_extents_);
     SWIGTYPE_p_p_tiledb_dimension_t d1pp = tiledb
         .new_tiledb_dimension_tpp();
     tiledb.tiledb_dimension_create(ctx, d1pp, "",
@@ -61,9 +60,9 @@ public class TiledbArraySchema {
     tiledb_dimension_t d1 = tiledb.tiledb_dimension_tpp_value(d1pp);
 
     long[] d2_domain_ = {101, 10000};
-    uint64_tArray d2_domain = ArrayUtils.newUint64Array(d2_domain_);
+    uint64_tArray d2_domain = Utils.newUint64Array(d2_domain_);
     long[] d2_extents_ = {10};
-    uint64_tArray d2_extent = ArrayUtils.newUint64Array(d2_extents_);
+    uint64_tArray d2_extent = Utils.newUint64Array(d2_extents_);
     SWIGTYPE_p_p_tiledb_dimension_t d2pp = tiledb
         .new_tiledb_dimension_tpp();
     tiledb.tiledb_dimension_create(ctx, d2pp, "d2",

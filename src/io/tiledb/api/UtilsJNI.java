@@ -1,7 +1,7 @@
 package io.tiledb.api;
 
 
-public class ArrayUtilsJNI {
+public class UtilsJNI {
 
   public final static native int sizeOfInt();
 
@@ -78,4 +78,9 @@ public class ArrayUtilsJNI {
 
   public final static native long[] uint64ArrayGet(long array, int size);
 
+  public final static native int tiledb_query_submit_async(long jarg1, tiledb_ctx_t jarg1_, long jarg2, tiledb_query_t jarg2_, Object jarg3);
+  public final static native long java_callback();
+  public final static native int tiledb_object_walk(long jarg1, tiledb_ctx_t jarg1_, String jarg2, int jarg3, Object jarg4);
+  public final static native int tiledb_ls(long jarg1, tiledb_ctx_t jarg1_, String jarg2, Object jarg3);
+  public final static native long java_path_callback();
 }

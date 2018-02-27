@@ -3,7 +3,6 @@ package examples;
 //import io.tiledb.api.Domain;
 
 import io.tiledb.api.*;
-import io.tiledb.custom.Version;
 
 public class TiledbObjectLsWalk {
 
@@ -19,19 +18,19 @@ public class TiledbObjectLsWalk {
 
     // List children
     System.out.printf("List children:\n");
-    tiledb.tiledb_ls(ctx, "my_group", tiledb.native_walk_callback(), null);
+    Utils.tiledb_ls(ctx, "my_group", new ReadCallback("java printing:"));
 
     // Walk in a path with a pre- and post-order traversal
     System.out.printf("\nPreorder traversal:\n");
-    tiledb.tiledb_object_walk_jc(ctx, "my_group", tiledb_walk_order_t.TILEDB_PREORDER, tiledb.java_path_callback(), new ReadCallback(""));
+    Utils.tiledb_object_walk(ctx, "my_group", tiledb_walk_order_t.TILEDB_PREORDER, new ReadCallback("java printing:"));
     System.out.printf("\nPostorder traversal:\n");
-    tiledb.tiledb_object_walk_jc(ctx, "my_group", tiledb_walk_order_t.TILEDB_POSTORDER, tiledb.java_path_callback(), new ReadCallback(""));
+    Utils.tiledb_object_walk(ctx, "my_group", tiledb_walk_order_t.TILEDB_POSTORDER, new ReadCallback("java printing:"));
 
     // Clean up
     tiledb.tiledb_ctx_free(ctx);
   }
 
-  private static class ReadCallback extends CallbackPath {
+  private static class ReadCallback extends PathCallback {
 
     private final String data;
 
@@ -41,7 +40,7 @@ public class TiledbObjectLsWalk {
 
     @Override
     public int call(String path, tiledb_object_t type) {
-      System.out.printf("Wowwww %s ", path);
+      System.out.printf("%s %s ", data, path);
       switch (type) {
         case TILEDB_ARRAY:
           System.out.printf("ARRAY");

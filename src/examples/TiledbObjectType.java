@@ -1,7 +1,6 @@
 package examples;
 
 import io.tiledb.api.*;
-import io.tiledb.custom.Version;
 
 public class TiledbObjectType {
 

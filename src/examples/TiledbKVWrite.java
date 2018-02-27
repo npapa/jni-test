@@ -2,11 +2,9 @@ package examples;
 
 //import io.tiledb.api.Domain;
 
-import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
 
 import io.tiledb.api.*;
-import io.tiledb.custom.Version;
 
 public class TiledbKVWrite {
 
@@ -22,35 +20,35 @@ public class TiledbKVWrite {
 
     // Key-values with three attributes
     int key1_[] = {100};
-    intArray key1 = ArrayUtils.newIntArray(key1_);
+    intArray key1 = Utils.newIntArray(key1_);
     int key1_a1_[] = {1};
-    intArray key1_a1 = ArrayUtils.newIntArray(key1_a1_);
-    charArray key1_a2 = ArrayUtils.newCharArray("a");
+    intArray key1_a1 = Utils.newIntArray(key1_a1_);
+    charArray key1_a2 = Utils.newCharArray("a");
     float key1_a3_[] = {1.1f, 1.2f};
-    floatArray key1_a3 = ArrayUtils.newFloatArray(key1_a3_);
+    floatArray key1_a3 = Utils.newFloatArray(key1_a3_);
 
     float key2_[] = {(float) 200.0};
-    floatArray key2 = ArrayUtils.newFloatArray(key2_);
+    floatArray key2 = Utils.newFloatArray(key2_);
     int key2_a1_[] = {2};
-    intArray key2_a1 = ArrayUtils.newIntArray(key2_a1_);
-    charArray key2_a2 = ArrayUtils.newCharArray("bb");
+    intArray key2_a1 = Utils.newIntArray(key2_a1_);
+    charArray key2_a2 = Utils.newCharArray("bb");
     float key2_a3_[] = {1.1f, 1.2f};
-    floatArray key2_a3 = ArrayUtils.newFloatArray(key2_a3_);
+    floatArray key2_a3 = Utils.newFloatArray(key2_a3_);
 
     double key3_[] = {300.0, 300.1};
-    doubleArray key3 = ArrayUtils.newDoubleArray(key3_);
+    doubleArray key3 = Utils.newDoubleArray(key3_);
     int key3_a1_[] = {3};
-    intArray key3_a1 = ArrayUtils.newIntArray(key3_a1_);
-    charArray key3_a2 = ArrayUtils.newCharArray("ccc");
+    intArray key3_a1 = Utils.newIntArray(key3_a1_);
+    charArray key3_a2 = Utils.newCharArray("ccc");
     float key3_a3_[] = {3.1f, 3.2f};
-    floatArray key3_a3 = ArrayUtils.newFloatArray(key3_a3_);
+    floatArray key3_a3 = Utils.newFloatArray(key3_a3_);
 
-    charArray key4 = ArrayUtils.newCharArray("key_4");
+    charArray key4 = Utils.newCharArray("key_4");
     int key4_a1_[] = {4};
-    intArray key4_a1 = ArrayUtils.newIntArray(key4_a1_);
-    charArray key4_a2 = ArrayUtils.newCharArray("dddd");
+    intArray key4_a1 = Utils.newIntArray(key4_a1_);
+    charArray key4_a2 = Utils.newCharArray("dddd");
     float key4_a3_[] = {4.1f, 4.2f};
-    floatArray key4_a3 = ArrayUtils.newFloatArray(key4_a3_);
+    floatArray key4_a3 = Utils.newFloatArray(key4_a3_);
 
     // Open the key-value store
     SWIGTYPE_p_p_tiledb_kv_t kvpp = tiledb.new_tiledb_kv_tpp();

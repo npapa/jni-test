@@ -5,7 +5,6 @@ package examples;
 import java.math.BigInteger;
 
 import io.tiledb.api.*;
-import io.tiledb.custom.Version;
 
 public class TiledbSparseReadSubsetIncomplete {
 
@@ -43,7 +42,7 @@ public class TiledbSparseReadSubsetIncomplete {
     SWIGTYPE_p_p_char attributes = tiledb.new_charpArray(1);
     tiledb.charpArray_setitem(attributes, 0, "a1");
     long[] subarray_ = {3, 4, 2, 4};
-    uint64_tArray subarray = ArrayUtils.newUint64Array(subarray_);
+    uint64_tArray subarray = Utils.newUint64Array(subarray_);
     SWIGTYPE_p_p_tiledb_query_t querypp = tiledb.new_tiledb_query_tpp();
     tiledb.tiledb_query_create(ctx, querypp, "my_sparse_array",
         tiledb_query_type_t.TILEDB_READ);

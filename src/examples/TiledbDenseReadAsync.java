@@ -38,7 +38,7 @@ public class TiledbDenseReadAsync {
     tiledb.charpArray_setitem(attributes, 2, "a3");
     uint64_tArray buffer_sizes = new uint64_tArray(4);
     long[] subarray_ = {1, 4, 1, 4};
-    uint64_tArray subarray = ArrayUtils.newUint64Array(subarray_);
+    uint64_tArray subarray = Utils.newUint64Array(subarray_);
     tiledb.tiledb_array_compute_max_read_buffer_sizes(ctx,
         "my_dense_array", PointerUtils.toVoid(subarray), attributes, 3,
         buffer_sizes.cast());
@@ -49,10 +49,10 @@ public class TiledbDenseReadAsync {
     System.out.println("a3: " + buffer_sizes.getitem(3));
 
     // Prepare cell buffers
-    int a1_size = buffer_sizes.getitem(0).intValue() / ArrayUtilsJNI.sizeOfInt32();
-    int a2_size = buffer_sizes.getitem(1).intValue() /ArrayUtilsJNI.sizeOfUint64();
-    int a2_var_size = buffer_sizes.getitem(2).intValue() / ArrayUtilsJNI.sizeOfInt8();
-    int a3_size = buffer_sizes.getitem(3).intValue() /ArrayUtilsJNI.sizeOfFloat();
+    int a1_size = buffer_sizes.getitem(0).intValue() / UtilsJNI.sizeOfInt32();
+    int a2_size = buffer_sizes.getitem(1).intValue() / UtilsJNI.sizeOfUint64();
+    int a2_var_size = buffer_sizes.getitem(2).intValue() / UtilsJNI.sizeOfInt8();
+    int a3_size = buffer_sizes.getitem(3).intValue() / UtilsJNI.sizeOfFloat();
 
     int32_tArray buffer_a1 = new int32_tArray(a1_size);
     uint64_tArray buffer_a2 = new uint64_tArray(a2_size);
@@ -79,9 +79,9 @@ public class TiledbDenseReadAsync {
 
     // Submit query
 //    String s_ = "Callback: Query completed";
-//    charArray s = ArrayUtils.newCharArray(s_);
-
-    tiledb.tiledb_query_submit_async_jc(ctx, query, tiledb.java_callback(), new ReadCallback("Callback: Query completed"));
+//    charArray s = Utils.newCharArray(s_);
+    ReadCallback callback = new ReadCallback("Java Callback: Query completed");
+    Utils.tiledb_query_submit_async(ctx, query, callback);
 
     // Wait for query to complete
     System.out.printf("Query in progress\n");
@@ -92,16 +92,16 @@ public class TiledbDenseReadAsync {
 
 
 
-    a1_size = buffer_sizes.getitem(0).intValue() / ArrayUtilsJNI.sizeOfInt32();
-    a2_size = buffer_sizes.getitem(1).intValue() /ArrayUtilsJNI.sizeOfUint64();
-    a2_var_size = buffer_sizes.getitem(2).intValue() / ArrayUtilsJNI.sizeOfInt8();
-    a3_size = buffer_sizes.getitem(3).intValue() /ArrayUtilsJNI.sizeOfFloat();
+    a1_size = buffer_sizes.getitem(0).intValue() / UtilsJNI.sizeOfInt32();
+    a2_size = buffer_sizes.getitem(1).intValue() / UtilsJNI.sizeOfUint64();
+    a2_var_size = buffer_sizes.getitem(2).intValue() / UtilsJNI.sizeOfInt8();
+    a3_size = buffer_sizes.getitem(3).intValue() / UtilsJNI.sizeOfFloat();
 
     // Print cell values (assumes all attributes are read)
-    int[] a1 = ArrayUtils.int32ArrayGet(buffer_a1,a1_size);
-    long[] a2 = ArrayUtils.uint64ArrayGet(buffer_a2,a2_size);
-    byte[] a2_var = ArrayUtils.int8ArrayGet(buffer_var_a2, a2_var_size);
-    float[] a3 = ArrayUtils.floatArrayGet(buffer_a3,a3_size);
+    int[] a1 = Utils.int32ArrayGet(buffer_a1,a1_size);
+    long[] a2 = Utils.uint64ArrayGet(buffer_a2,a2_size);
+    byte[] a2_var = Utils.int8ArrayGet(buffer_var_a2, a2_var_size);
+    float[] a3 = Utils.floatArrayGet(buffer_a3,a3_size);
 
     int result_num = a1_size;
     System.out.println("Result num: " + result_num);
@@ -111,7 +111,7 @@ public class TiledbDenseReadAsync {
       System.out.print(a1[i] + ", ");
       int var_size = (i != result_num - 1) ? (int)a2[i + 1] - (int)a2[i]
           : a2_var_size - (int)a2[i];
-      System.out.print(ArrayUtils.substring(a2_var, (int)a2[i], var_size)
+      System.out.print(Utils.substring(a2_var, (int)a2[i], var_size)
           + ", ");
       System.out.print(a3[2 * i] + " "
           + a3[2 * i + 1] + ", ");

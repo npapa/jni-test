@@ -3,7 +3,6 @@ package examples;
 //import io.tiledb.api.Domain;
 
 import io.tiledb.api.*;
-import io.tiledb.custom.Version;
 
 public class TiledbSparseWriteGlobal1 {
 
@@ -19,19 +18,19 @@ public class TiledbSparseWriteGlobal1 {
 
     // Prepare cell buffers
     int[] buffer_a1 = {0, 1, 2, 3, 4, 5, 6, 7};
-    intArray a1 = ArrayUtils.newIntArray(buffer_a1);
+    intArray a1 = Utils.newIntArray(buffer_a1);
     long[] buffer_a2 = {0, 1, 3, 6, 10, 11, 13, 16};
-    uint64_tArray a2 = ArrayUtils.newUint64Array(buffer_a2);
+    uint64_tArray a2 = Utils.newUint64Array(buffer_a2);
     String buffer_var_a2 = "abbcccddddeffggghhhh";
-    charArray var_a2 = ArrayUtils.newCharArray(buffer_var_a2);
+    charArray var_a2 = Utils.newCharArray(buffer_var_a2);
 
     float buffer_a3[] = {0.1f, 0.2f, 1.1f, 1.2f, 2.1f, 2.2f, 3.1f, 3.2f,
         4.1f, 4.2f, 5.1f, 5.2f, 6.1f, 6.2f, 7.1f, 7.2f};
-    floatArray a3 = ArrayUtils.newFloatArray(buffer_a3);
+    floatArray a3 = Utils.newFloatArray(buffer_a3);
 
     long buffer_coords_[] = {1, 1, 1, 2, 1, 4, 2, 3, 3, 1, 4, 2, 3, 3, 3,
         4};
-    uint64_tArray buffer_coords = ArrayUtils.newUint64Array(buffer_coords_);
+    uint64_tArray buffer_coords = Utils.newUint64Array(buffer_coords_);
 
     SWIGTYPE_p_p_void buffers = tiledb.new_voidpArray(5);
     tiledb.voidpArray_setitem(buffers, 0, PointerUtils.toVoid(a1));
@@ -43,7 +42,7 @@ public class TiledbSparseWriteGlobal1 {
     long buffer_sizes_[] = {buffer_a1.length * 4, buffer_a2.length * 8,
         buffer_var_a2.length(), buffer_a3.length * 4,
         buffer_coords_.length * 8};
-    uint64_tArray buffer_sizes = ArrayUtils.newUint64Array(buffer_sizes_);
+    uint64_tArray buffer_sizes = Utils.newUint64Array(buffer_sizes_);
 
     // Create query
     SWIGTYPE_p_p_tiledb_query_t querypp = tiledb.new_tiledb_query_tpp();

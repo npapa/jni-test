@@ -3,7 +3,6 @@ package examples;
 //import io.tiledb.api.Domain;
 
 import io.tiledb.api.*;
-import io.tiledb.custom.Version;
 
 public class TiledbObjectMove {
 

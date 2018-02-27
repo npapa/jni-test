@@ -1682,27 +1682,9 @@ public class tiledb implements tiledbConstants {
     return (cPtr == 0) ? null : new SWIGTYPE_p_f_p_void__void(cPtr, false);
   }
 
-  public static SWIGTYPE_p_f_p_void__void java_callback() {
-    long cPtr = tiledbJNI.java_callback();
-    return (cPtr == 0) ? null : new SWIGTYPE_p_f_p_void__void(cPtr, false);
-  }
-
-  public static SWIGTYPE_p_f_p_q_const__char_enum_tiledb_object_t_p_void__int java_path_callback() {
-    long cPtr = tiledbJNI.java_path_callback();
-    return (cPtr == 0) ? null : new SWIGTYPE_p_f_p_q_const__char_enum_tiledb_object_t_p_void__int(cPtr, false);
-  }
-
-  public static int tiledb_object_walk_jc(tiledb_ctx_t ctx, String path, tiledb_walk_order_t order, SWIGTYPE_p_f_p_q_const__char_enum_tiledb_object_t_p_void__int callback, CallbackPath callback_data) {
-    return tiledbJNI.tiledb_object_walk_jc(tiledb_ctx_t.getCPtr(ctx), ctx, path, order.swigValue(), SWIGTYPE_p_f_p_q_const__char_enum_tiledb_object_t_p_void__int.getCPtr(callback), callback_data);
-  }
-
   public static SWIGTYPE_p_f_p_q_const__char_enum_tiledb_object_t_p_void__int native_walk_callback() {
     long cPtr = tiledbJNI.native_walk_callback();
     return (cPtr == 0) ? null : new SWIGTYPE_p_f_p_q_const__char_enum_tiledb_object_t_p_void__int(cPtr, false);
-  }
-
-  public static int tiledb_query_submit_async_jc(tiledb_ctx_t ctx, tiledb_query_t query, SWIGTYPE_p_f_p_void__void callback, Callback callback_data) {
-    return tiledbJNI.tiledb_query_submit_async_jc(tiledb_ctx_t.getCPtr(ctx), ctx, tiledb_query_t.getCPtr(query), query, SWIGTYPE_p_f_p_void__void.getCPtr(callback), callback_data);
   }
 
 }

@@ -10322,146 +10322,17 @@ SWIGEXPORT jlong JNICALL Java_io_tiledb_api_tiledbJNI_native_1callback(JNIEnv *j
   return jresult;
 }
 
-
 SWIGEXPORT jlong JNICALL Java_io_tiledb_api_tiledbJNI_native_1walk_1callback(JNIEnv *jenv, jclass jcls) {
   jlong jresult = 0 ;
   int (*result)(char const *,tiledb_object_t,void *) = 0 ;
-  
+
   (void)jenv;
   (void)jcls;
   result = (int (*)(char const *,tiledb_object_t,void *))native_walk_callback();
-  *(int (**)(char const *,tiledb_object_t,void *))&jresult = result; 
+  *(int (**)(char const *,tiledb_object_t,void *))&jresult = result;
   return jresult;
 }
 
-struct Callback {
-   jobject obj;
-   jclass cls;
-};
-
-SWIGEXPORT jint JNICALL Java_io_tiledb_api_tiledbJNI_tiledb_1query_1submit_1async_1jc(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jlong jarg3, jobject jarg4) {
-  jint jresult = 0 ;
-  tiledb_ctx_t *arg1 = (tiledb_ctx_t *) 0 ;
-  tiledb_query_t *arg2 = (tiledb_query_t *) 0 ;
-  void (*arg3)(void *) = (void (*)(void *)) 0 ;
-  jobject arg4 ;
-  int result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  (void)jarg2_;
-  arg1 = *(tiledb_ctx_t **)&jarg1; 
-  arg2 = *(tiledb_query_t **)&jarg2; 
-  arg3 = *(void (**)(void *))&jarg3; 
-  arg4 = jarg4;
-  struct Callback* callback = new Callback;
-  callback->obj=jenv->NewGlobalRef(arg4);
-  callback->cls=jenv->GetObjectClass(arg4);
-  result = (int)tiledb_query_submit_async(arg1,arg2,arg3,(void *) callback);
-  jresult = (jint)result; 
-  return jresult;
-}
-
-SWIGEXPORT jint JNICALL Java_io_tiledb_api_tiledbJNI_tiledb_1object_1walk_1jc(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2, jint jarg3, jlong jarg4, jobject jarg5) {
-  jint jresult = 0 ;
-  tiledb_ctx_t *arg1 = (tiledb_ctx_t *) 0 ;
-  char *arg2 = (char *) 0 ;
-  tiledb_walk_order_t arg3 ;
-  int (*arg4)(char const *,tiledb_object_t,void *) = (int (*)(char const *,tiledb_object_t,void *)) 0 ;
-  void *arg5 = (void *) 0 ;
-  int result;
-
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(tiledb_ctx_t **)&jarg1;
-  arg2 = 0;
-  if (jarg2) {
-    arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
-    if (!arg2) return 0;
-  }
-  arg3 = (tiledb_walk_order_t)jarg3;
-  arg4 = *(int (**)(char const *,tiledb_object_t,void *))&jarg4;
-  struct Callback* callback = new Callback;
-  callback->obj=jenv->NewGlobalRef(jarg5);
-  callback->cls=jenv->GetObjectClass(jarg5);
-  result = (int)tiledb_object_walk(arg1,(char const *)arg2,arg3,arg4,(void *) callback);
-  jresult = (jint)result;
-  if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
-  return jresult;
-}
-
-
-
-JNIEnv* getJNI(){
-  JavaVM* vm;
-  jsize vmCount;
-  if (JNI_GetCreatedJavaVMs(&vm, 1, &vmCount) != JNI_OK || vmCount == 0) {
-      fprintf(stderr, "Could not get active VM\n");
-      return NULL;
-  }
-
-  JNIEnv* env;
-  jint result = vm->GetEnv((void**)&env, JNI_VERSION_1_6);
-  if (result == JNI_EDETACHED) {
-      result = vm->AttachCurrentThread((void**)&env, NULL);
-  }
-  if (result != JNI_OK) {
-      fprintf(stderr, "Failed to get JNIEnv\n");
-      return NULL;
-  }
-  return env;
-}
-
-void java_callback(void* data) {
-  JNIEnv* jenv = getJNI();
-  jobject obj = ((Callback*)data)->obj;
-  jclass cls = ((Callback*)data)->cls;
-  jmethodID mid = jenv->GetMethodID(cls, "call", "()V");
-  if (mid == 0)
-    return;
-  jenv->CallVoidMethod(obj, mid);
-  //vm->DetachCurrentThread();
-}
-
-int java_path_callback(const char* path, tiledb_object_t type, void* data) {
-  JNIEnv* jenv = getJNI();
-  jobject obj = ((Callback*)data)->obj;
-  jclass cls = ((Callback*)data)->cls;
-  jmethodID mid = jenv->GetMethodID(cls, "call", "(JI)I");
-  if (mid == 0)
-    return -1;
-  jlong jpath;
-  *(const char **)&jpath = path;
-  jint ret = jenv->CallIntMethod(obj, mid, jpath, (jint) type);
-  //vm->DetachCurrentThread();
-  return ret;
-}
-
-
-SWIGEXPORT jlong JNICALL Java_io_tiledb_api_tiledbJNI_java_1callback(JNIEnv *jenv, jclass jcls) {
-  jlong jresult = 0 ;
-  void (*result)(void *) = 0 ;
-
-  (void)jenv;
-  (void)jcls;
-  result = (void (*)(void *))java_callback;
-  *(void (**)(void *))&jresult = result;
-  return jresult;
-}
-
-
-SWIGEXPORT jlong JNICALL Java_io_tiledb_api_tiledbJNI_java_1path_1callback(JNIEnv *jenv, jclass jcls) {
-  jlong jresult = 0 ;
-  int (*result)(char const *,tiledb_object_t,void *) = 0 ;
-
-  (void)jenv;
-  (void)jcls;
-  result = (int (*)(const char* , tiledb_object_t, void *))java_path_callback;
-  *(int (**)(const char* , tiledb_object_t, void *))&jresult = result;
-  return jresult;
-}
 
 #ifdef __cplusplus
 }

@@ -5,7 +5,6 @@ package examples;
 import java.math.BigInteger;
 
 import io.tiledb.api.*;
-import io.tiledb.custom.Version;
 
 public class TiledbKVRead {
 
@@ -29,15 +28,15 @@ public class TiledbKVRead {
 
     // Prepare key
 //		int key_[] = { 100 };
-//		intArray key = ArrayUtils.newIntArray(key_);
+//		intArray key = Utils.newIntArray(key_);
 
 //		float key_[] = { (float)100.0 };
-//		floatArray key = ArrayUtils.newFfoatArray(key_);
+//		floatArray key = Utils.newFfoatArray(key_);
 
 //		double key_[] = { 300.0, 300.1 };
-//		doubleArray key = ArrayUtils.newDoubleArray(key_);
+//		doubleArray key = Utils.newDoubleArray(key_);
 
-    charArray key = ArrayUtils.newCharArray("key_4");
+    charArray key = Utils.newCharArray("key_4");
     tiledb_datatype_t key_type = tiledb_datatype_t.TILEDB_CHAR;
     SWIGTYPE_p_tiledb_datatype_t key_typep = tiledb
         .new_tiledb_datatype_tp();
@@ -88,7 +87,7 @@ public class TiledbKVRead {
     System.out.printf("a1, a2, (a3.first, a3.second)\n");
     System.out.printf("-----------------------------\n");
     System.out.printf("%d", PointerUtils.intFromVoid(a1).getitem(0));
-    System.out.printf(", %s", ArrayUtils.substring(PointerUtils.charArrayFromVoid(a2), 0, a2_size_));
+    System.out.printf(", %s", Utils.substring(PointerUtils.charArrayFromVoid(a2), 0, a2_size_));
     System.out.printf(", (%f, %f)\n", PointerUtils.floatArrayFromVoid(a3).getitem(0),
         PointerUtils.floatArrayFromVoid(a3).getitem(1));
 
