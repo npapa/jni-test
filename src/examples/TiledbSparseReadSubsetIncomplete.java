@@ -1,16 +1,10 @@
 package examples;
 
-//import io.tiledb.api.Domain;
-
 import java.math.BigInteger;
 
 import io.tiledb.api.*;
 
 public class TiledbSparseReadSubsetIncomplete {
-
-  static {
-    System.loadLibrary("tiledb");
-  }
 
   /*
    * It shows how to read from a sparse array, constraining the read to a

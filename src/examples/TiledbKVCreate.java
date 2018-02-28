@@ -1,16 +1,10 @@
 package examples;
 
-//import io.tiledb.api.Domain;
-
 import java.math.BigInteger;
 
 import io.tiledb.api.*;
 
 public class TiledbKVCreate {
-
-  static {
-    System.loadLibrary("tiledb");
-  }
 
   /*
    * It shows how to create a key-value store.

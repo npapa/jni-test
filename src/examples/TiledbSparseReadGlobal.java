@@ -1,14 +1,8 @@
 package examples;
 
-//import io.tiledb.api.Domain;
-
 import io.tiledb.api.*;
 
 public class TiledbSparseReadGlobal {
-
-  static {
-    System.loadLibrary("tiledb");
-  }
 
   /*
    * It shows how to read a complete sparse array in the global cell order.

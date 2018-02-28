@@ -1,14 +1,8 @@
 package examples;
 
-//import io.tiledb.api.Domain;
-
 import io.tiledb.api.*;
 
 public class TiledbDenseWriteAsync {
-
-  static {
-    System.loadLibrary("tiledb");
-  }
 
   public static void main(String[] args) throws InterruptedException {
     // Create TileDB context

@@ -1,16 +1,10 @@
 package examples;
 
-//import io.tiledb.api.Domain;
-
 import java.math.BigInteger;
 
 import io.tiledb.api.*;
 
 public class TiledbArraySchema {
-
-  static {
-    System.loadLibrary("tiledb");
-  }
 
   public static void main(String[] args) {
     // Create TileDB context

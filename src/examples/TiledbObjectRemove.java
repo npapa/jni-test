@@ -4,10 +4,6 @@ import io.tiledb.api.*;
 
 public class TiledbObjectRemove {
 
-  static {
-    System.loadLibrary("tiledb");
-  }
-
   /*
    * It shows how to remove a TileDB resource.
    *

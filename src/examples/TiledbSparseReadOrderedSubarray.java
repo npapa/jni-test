@@ -1,14 +1,8 @@
 package examples;
 
-//import io.tiledb.api.Domain;
-
 import io.tiledb.api.*;
 
 public class TiledbSparseReadOrderedSubarray {
-
-  static {
-    System.loadLibrary("tiledb");
-  }
 
   /*
    * It shows how to read from a sparse array, constraining the read to a

@@ -5,10 +5,6 @@ import io.tiledb.api.*;
 
 public class ArrayTest {
 
-  static {
-    System.loadLibrary("tiledb");
-  }
-
   public static void main(String[] args) {
     testInt();
     testInt32();

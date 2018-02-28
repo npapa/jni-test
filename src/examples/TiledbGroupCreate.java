@@ -1,14 +1,8 @@
 package examples;
 
-//import io.tiledb.api.Domain;
-
 import io.tiledb.api.*;
 
 public class TiledbGroupCreate {
-
-  static {
-    System.loadLibrary("tiledb");
-  }
 
   public static void main(String[] args) {
 

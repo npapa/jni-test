@@ -9,6 +9,11 @@
 package io.tiledb.api;
 
 public class tiledbJNI {
+
+  static {
+    System.loadLibrary("tiledb");
+  }
+
   public final static native long new_intArray(int jarg1);
   public final static native void delete_intArray(long jarg1);
   public final static native int intArray_getitem(long jarg1, intArray jarg1_, int jarg2);

@@ -1,16 +1,10 @@
 package examples;
 
-//import io.tiledb.api.Domain;
-
 import java.math.BigInteger;
 
 import io.tiledb.api.*;
 
 public class TiledbSparseCreate {
-
-  static {
-    System.loadLibrary("tiledb");
-  }
 
   /*
    * It shows how to create a sparse array. Make sure that no directory exists

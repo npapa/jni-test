@@ -1,14 +1,8 @@
 package examples;
 
-//import io.tiledb.api.Domain;
-
 import io.tiledb.api.*;
 
 public class TiledbSparseWriteUnordered1 {
-
-  static {
-    System.loadLibrary("tiledb");
-  }
 
   /*
    * It shows how to write unordered cells to a sparse array in a single

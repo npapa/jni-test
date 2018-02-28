@@ -3,6 +3,10 @@ package io.tiledb.api;
 
 public class UtilsJNI {
 
+  static {
+    System.loadLibrary("tiledb");
+  }
+
   public final static native int sizeOfInt();
 
   public final static native int sizeOfInt32();

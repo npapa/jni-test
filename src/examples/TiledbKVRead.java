@@ -1,16 +1,10 @@
 package examples;
 
-//import io.tiledb.api.Domain;
-
 import java.math.BigInteger;
 
 import io.tiledb.api.*;
 
 public class TiledbKVRead {
-
-  static {
-    System.loadLibrary("tiledb");
-  }
 
 	/*
    * It shows how to read from a key-value store.
